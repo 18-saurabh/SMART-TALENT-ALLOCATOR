@@ -1,13 +1,18 @@
 import React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { User, Calendar, CheckCircle, Clock, Target, BarChart3, AlertCircle, TrendingUp, Settings } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
 import ProjectCard from '../components/ProjectCard';
+import CalendarModal from '../components/CalendarModal';
+import PerformanceModal from '../components/PerformanceModal';
 
 export default function EmployeeDashboard() {
   const { userProfile } = useAuth();
   const { projects, loading, updateProjectStatus } = useProjects();
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [isPerformanceModalOpen, setIsPerformanceModalOpen] = useState(false);
 
   // Calculate statistics
   const activeProjects = projects.filter(p => p.status === 'in-progress').length;
@@ -220,35 +225,49 @@ export default function EmployeeDashboard() {
                   <p className="text-gray-500 text-sm">{userProfile?.email}</p>
                 </div>
               </div>
-              <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200">
-                Edit Profile
-              </button>
-              <Link
-                to="/employee-profile"
-                className="w-full mt-2 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200 text-center block"
-              >
-                Manage Skills & Availability
-              </Link>
+              <Link 
+  to="/employee-profile?tab=edit"
+  className="w-full mt-2 text-center block py-2 px-4 rounded-lg font-medium transition-colors duration-200 bg-blue-600 text-white hover:bg-blue-700"
+>
+  Edit Profile
+</Link>
+
+<Link
+  to="/employee-profile?tab=skills"
+  className="w-full mt-2 text-center block py-2 px-4 rounded-lg font-medium transition-colors duration-200 bg-gray-100 text-gray-700 hover:bg-gray-200"
+>
+  Manage Skills & Availability
+</Link>
+
             </div>
 
             {/* Quick Actions */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3">
+                <button 
+                  onClick={() => setIsCalendarModalOpen(true)}
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                >
                   <Calendar className="h-5 w-5 text-blue-600" />
                   <span className="text-gray-700">View Calendar</span>
                 </button>
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3">
+                <button 
+                  onClick={() => setIsPerformanceModalOpen(true)}
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                >
                   <BarChart3 className="h-5 w-5 text-purple-600" />
                   <span className="text-gray-700">My Performance</span>
                 </button>
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3">
+                <Link
+                  to="/employee-profile?tab=edit"
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                >
                   <User className="h-5 w-5 text-green-600" />
                   <span className="text-gray-700">Update Profile</span>
-                </button>
+                </Link>
                 <Link
-                  to="/employee-profile"
+                  to="/employee-profile?tab=skills"
                   className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
                 >
                   <Settings className="h-5 w-5 text-purple-600" />
@@ -285,6 +304,17 @@ export default function EmployeeDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <CalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+      />
+      
+      <PerformanceModal
+        isOpen={isPerformanceModalOpen}
+        onClose={() => setIsPerformanceModalOpen(false)}
+      />
     </div>
   );
 }
