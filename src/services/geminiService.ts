@@ -27,7 +27,7 @@ class GeminiService {
       throw new Error('Gemini API key not found in environment variables');
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
   }
 
   async generateEmployeeRecommendations(

@@ -5,6 +5,8 @@ import { Users, Target, TrendingUp, Calendar, Plus, UserCheck, AlertCircle, BarC
 import { useProjects } from '../hooks/useProjects';
 import { useEmployees } from '../hooks/useEmployees';
 import CreateProjectModal from '../components/CreateProjectModal';
+import ReportsModal from '../components/ReportsModal';
+import TeamManagementModal from '../components/TeamManagementModal';
 import ProjectCard from '../components/ProjectCard';
 import EmployeeSearch from '../components/EmployeeSearch';
 import SkillsManager from '../components/SkillsManager';
@@ -22,6 +24,8 @@ export default function ManagerDashboard() {
     getSkillSuggestions 
   } = useEmployees();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isReportsModalOpen, setIsReportsModalOpen] = useState(false);
+  const [isTeamManagementModalOpen, setIsTeamManagementModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
 
   const loading = projectsLoading || employeesLoading;
@@ -358,11 +362,17 @@ export default function ManagerDashboard() {
                   <Plus className="h-5 w-5 text-blue-600" />
                   <span className="text-gray-700">Create Project</span>
                 </button>
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3">
+                <button 
+                  onClick={() => setIsReportsModalOpen(true)}
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                >
                   <BarChart3 className="h-5 w-5 text-purple-600" />
                   <span className="text-gray-700">View Reports</span>
                 </button>
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3">
+                <button 
+                  onClick={() => setIsTeamManagementModalOpen(true)}
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                >
                   <Users className="h-5 w-5 text-green-600" />
                   <span className="text-gray-700">Manage Team</span>
                 </button>
@@ -402,6 +412,18 @@ export default function ManagerDashboard() {
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
           employees={allEmployees}
+        />
+
+        {/* Reports Modal */}
+        <ReportsModal
+          isOpen={isReportsModalOpen}
+          onClose={() => setIsReportsModalOpen(false)}
+        />
+
+        {/* Team Management Modal */}
+        <TeamManagementModal
+          isOpen={isTeamManagementModalOpen}
+          onClose={() => setIsTeamManagementModalOpen(false)}
         />
       </div>
     </div>
