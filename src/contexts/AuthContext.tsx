@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   onAuthStateChanged
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../config/firebase';
 
 interface UserProfile {
@@ -47,12 +47,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   async function checkEmailRole(email: string): Promise<'manager' | 'employee' | null> {
-    const managerDoc = await getDoc(doc(db, 'managers', email));
-    const employeeDoc = await getDoc(doc(db, 'employees', email));
+    try {
+      const managerQuery = await getDocs(query(collection(db, 'managers'), where('email', '==', email)));
+      const employeeQuery = await getDocs(query(collection(db, 'employees'), where('email', '==', email)));
     
-    if (managerDoc.exists()) return 'manager';
-    if (employeeDoc.exists()) return 'employee';
-    return null;
+      if (!managerQuery.empty) return 'manager';
+      if (!employeeQuery.empty) return 'employee';
+      return null;
+    } catch (error) {
+      console.error('Error checking email role:', error);
+      return null;
+    }
   }
 
   async function signUp(email: string, password: string, role: 'manager' | 'employee', name?: string) {
@@ -71,7 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       name
     };
 
-    await setDoc(doc(db, role === 'manager' ? 'managers' : 'employees', email), profile);
+    await setDoc(doc(db, role === 'manager' ? 'managers' : 'employees', user.uid), profile);
     setUserProfile(profile);
   }
 
@@ -79,14 +84,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
-    const role = await checkEmailRole(user.email!);
-    if (!role) {
-      throw new Error('User not found in our system');
-    }
+    try {
+      const role = await checkEmailRole(user.email!);
+      if (!role) {
+        throw new Error('User not found in our system');
+      }
 
-    const profileDoc = await getDoc(doc(db, role === 'manager' ? 'managers' : 'employees', user.email!));
-    if (profileDoc.exists()) {
-      setUserProfile(profileDoc.data() as UserProfile);
+      const profileQuery = await getDocs(query(
+        collection(db, role === 'manager' ? 'managers' : 'employees'), 
+        where('email', '==', user.email!)
+      ));
+      
+      if (!profileQuery.empty) {
+        setUserProfile(profileQuery.docs[0].data() as UserProfile);
+      }
+    } catch (error) {
+      console.error('Error during sign in:', error);
+      throw error;
     }
   }
 
