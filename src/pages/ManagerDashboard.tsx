@@ -1,22 +1,37 @@
 import React from 'react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Users, Target, TrendingUp, Calendar, Plus, UserCheck, AlertCircle, BarChart3, Clock, CheckCircle } from 'lucide-react';
+import { Users, Target, TrendingUp, Calendar, Plus, UserCheck, AlertCircle, BarChart3, Clock, CheckCircle, Search, Star } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
+import { useEmployees } from '../hooks/useEmployees';
 import CreateProjectModal from '../components/CreateProjectModal';
 import ProjectCard from '../components/ProjectCard';
+import EmployeeSearch from '../components/EmployeeSearch';
+import SkillsManager from '../components/SkillsManager';
+import AvailabilityManager from '../components/AvailabilityManager';
 
 export default function ManagerDashboard() {
   const { userProfile } = useAuth();
-  const { projects, employees, loading, updateProjectStatus } = useProjects();
+  const { projects, loading: projectsLoading, updateProjectStatus } = useProjects();
+  const { 
+    employees, 
+    allEmployees,
+    loading: employeesLoading, 
+    filterEmployees, 
+    resetFilters, 
+    getSkillSuggestions 
+  } = useEmployees();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
+
+  const loading = projectsLoading || employeesLoading;
 
   // Calculate statistics
   const activeProjects = projects.filter(p => p.status === 'in-progress').length;
   const completedProjects = projects.filter(p => p.status === 'completed').length;
   const projectsInReview = projects.filter(p => p.status === 'review').length;
   const overdueProjects = projects.filter(p => new Date() > p.deadline && p.status !== 'completed').length;
-  const totalEmployees = employees.length;
+  const totalEmployees = allEmployees.length;
   const averageProgress = projects.length > 0 
     ? Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / projects.length)
     : 0;
@@ -79,8 +94,10 @@ export default function ManagerDashboard() {
             </p>
           </div>
           <div className="flex space-x-3 mt-4 sm:mt-0">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2">
+            <button 
               onClick={() => setIsCreateModalOpen(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2"
+            >
               <Plus className="h-4 w-4" />
               <span>New Project</span>
             </button>
@@ -129,71 +146,90 @@ export default function ManagerDashboard() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recentProjects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  isManager={true}
-                  onStatusUpdate={updateProjectStatus}
-                />
-              ))}
-            </div>
-            
-            {/* Projects Pending Review */}
-            {projectsInReview > 0 && (
-              <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
-                  Projects Pending Review ({projectsInReview})
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {projects
-                    .filter(p => p.status === 'review')
-                    .map((project) => (
-                      <div key={project.id} className="border border-purple-200 rounded-lg p-4 bg-purple-50 hover:shadow-md transition-shadow duration-200">
-                        <h4 className="font-medium text-gray-900 mb-2">{project.title}</h4>
-                        <p className="text-sm text-gray-600 mb-3">
-                          Submitted by: {project.assignedEmployeeNames.join(', ')}
-                        </p>
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-sm text-gray-600">Progress: {project.progress}%</span>
-                          <div className="w-20 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-purple-500 h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${project.progress}%` }}
-                            />
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {recentProjects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    isManager={true}
+                    onStatusUpdate={updateProjectStatus}
+                  />
+                ))}
+              </div>
+              
+              {/* Projects Pending Review */}
+              {projectsInReview > 0 && (
+                <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
+                    Projects Pending Review ({projectsInReview})
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {projects
+                      .filter(p => p.status === 'review')
+                      .map((project) => (
+                        <div key={project.id} className="border border-purple-200 rounded-lg p-4 bg-purple-50 hover:shadow-md transition-shadow duration-200">
+                          <h4 className="font-medium text-gray-900 mb-2">{project.title}</h4>
+                          <p className="text-sm text-gray-600 mb-3">
+                            Submitted by: {project.assignedEmployeeNames.join(', ')}
+                          </p>
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-sm text-gray-600">Progress: {project.progress}%</span>
+                            <div className="w-20 bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${project.progress}%` }}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => updateProjectStatus(project.id, 'completed', 100)}
+                              className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors duration-200"
+                            >
+                              Approve & Complete
+                            </button>
+                            <button
+                              onClick={() => updateProjectStatus(project.id, 'in-progress', Math.max(project.progress - 10, 0))}
+                              className="flex-1 bg-orange-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors duration-200"
+                            >
+                              Request Changes
+                            </button>
                           </div>
                         </div>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => updateProjectStatus(project.id, 'completed', 100)}
-                            className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors duration-200"
-                          >
-                            Approve & Complete
-                          </button>
-                          <button
-                            onClick={() => updateProjectStatus(project.id, 'in-progress', Math.max(project.progress - 10, 0))}
-                            className="flex-1 bg-orange-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors duration-200"
-                          >
-                            Request Changes
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </>
           )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Team Overview */}
           <div className="lg:col-span-2">
+            {/* Employee Search and Filter */}
+            <div className="mb-6">
+              <EmployeeSearch
+                employees={allEmployees}
+                onFilter={filterEmployees}
+                onReset={resetFilters}
+                skillSuggestions={getSkillSuggestions()}
+              />
+            </div>
+
             {/* Team Members */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Team Overview</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Team Overview
+                  {employees.length !== allEmployees.length && (
+                    <span className="text-sm font-normal text-gray-500 ml-2">
+                      (Filtered: {employees.length} of {allEmployees.length})
+                    </span>
+                  )}
+                </h2>
                 <span className="text-sm text-gray-500">{employees.length} members</span>
               </div>
               
@@ -213,8 +249,21 @@ export default function ManagerDashboard() {
                       p.status === 'in-progress' || p.status === 'review'
                     );
                     
+                    const getAvailabilityColor = (availability: string) => {
+                      switch (availability) {
+                        case 'available': return 'bg-green-100 text-green-800';
+                        case 'limited': return 'bg-yellow-100 text-yellow-800';
+                        case 'unavailable': return 'bg-red-100 text-red-800';
+                        default: return 'bg-gray-100 text-gray-800';
+                      }
+                    };
+                    
                     return (
-                      <div key={employee.uid} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                      <div 
+                        key={employee.uid} 
+                        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                        onClick={() => setSelectedEmployee(selectedEmployee === employee.uid ? null : employee.uid)}
+                      >
                         <div className="flex items-center space-x-3 mb-3">
                           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                             <span className="text-blue-600 font-semibold text-sm">
@@ -224,16 +273,70 @@ export default function ManagerDashboard() {
                           <div className="flex-1">
                             <h3 className="font-semibold text-gray-900">{employee.name}</h3>
                             <p className="text-sm text-gray-600">{employee.email}</p>
+                            {employee.department && (
+                              <p className="text-xs text-gray-500">{employee.department}</p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(employee.availability)}`}>
+                              {employee.availability}
+                            </span>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">Active Projects:</span>
-                          <span className="font-medium text-gray-900">{activeProjects.length}</span>
+                        
+                        <div className="grid grid-cols-3 gap-2 text-sm mb-3">
+                          <div className="text-center">
+                            <span className="block font-medium text-gray-900">{activeProjects.length}</span>
+                            <span className="text-gray-600">Active</span>
+                          </div>
+                          <div className="text-center">
+                            <span className="block font-medium text-gray-900">{employeeProjects.length}</span>
+                            <span className="text-gray-600">Total</span>
+                          </div>
+                          <div className="text-center">
+                            <span className="block font-medium text-gray-900">{employee.skills.length}</span>
+                            <span className="text-gray-600">Skills</span>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between text-sm mt-1">
-                          <span className="text-gray-600">Total Projects:</span>
-                          <span className="font-medium text-gray-900">{employeeProjects.length}</span>
-                        </div>
+                        
+                        {/* Top Skills Preview */}
+                        {employee.skills.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {employee.skills.slice(0, 3).map((skill, index) => (
+                              <span 
+                                key={index}
+                                className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md flex items-center"
+                              >
+                                <Star className="h-3 w-3 mr-1" />
+                                {skill.name}
+                              </span>
+                            ))}
+                            {employee.skills.length > 3 && (
+                              <span className="px-2 py-1 bg-gray-50 text-gray-600 text-xs rounded-md">
+                                +{employee.skills.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Expanded Details */}
+                        {selectedEmployee === employee.uid && (
+                          <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                            <SkillsManager
+                              skills={employee.skills}
+                              onAddSkill={async () => {}}
+                              onRemoveSkill={async () => {}}
+                              skillSuggestions={[]}
+                              isEditable={false}
+                            />
+                            <AvailabilityManager
+                              availability={employee.availability}
+                              availabilityNotes={employee.availabilityNotes}
+                              onUpdateAvailability={async () => {}}
+                              isEditable={false}
+                            />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -298,7 +401,7 @@ export default function ManagerDashboard() {
         <CreateProjectModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
-          employees={employees}
+          employees={allEmployees}
         />
       </div>
     </div>

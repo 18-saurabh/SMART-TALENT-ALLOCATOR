@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { User, Calendar, CheckCircle, Clock, Target, BarChart3, AlertCircle, TrendingUp } from 'lucide-react';
+import { User, Calendar, CheckCircle, Clock, Target, BarChart3, AlertCircle, TrendingUp, Settings } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
 import ProjectCard from '../components/ProjectCard';
 
@@ -222,6 +223,12 @@ export default function EmployeeDashboard() {
               <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200">
                 Edit Profile
               </button>
+              <Link
+                to="/employee-profile"
+                className="w-full mt-2 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200 text-center block"
+              >
+                Manage Skills & Availability
+              </Link>
             </div>
 
             {/* Quick Actions */}
@@ -240,6 +247,13 @@ export default function EmployeeDashboard() {
                   <User className="h-5 w-5 text-green-600" />
                   <span className="text-gray-700">Update Profile</span>
                 </button>
+                <Link
+                  to="/employee-profile"
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                >
+                  <Settings className="h-5 w-5 text-purple-600" />
+                  <span className="text-gray-700">Skills & Availability</span>
+                </Link>
               </div>
             </div>
 

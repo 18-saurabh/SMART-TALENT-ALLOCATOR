@@ -9,6 +9,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import ManagerDashboard from './pages/ManagerDashboard';
+import EmployeeProfile from './pages/EmployeeProfile';
 
 function AppContent() {
   const { currentUser, userProfile } = useAuth();
@@ -41,6 +42,14 @@ function AppContent() {
             element={
               <ProtectedRoute requiredRole="manager">
                 <ManagerDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/employee-profile" 
+            element={
+              <ProtectedRoute requiredRole="employee">
+                <EmployeeProfile />
               </ProtectedRoute>
             } 
           />

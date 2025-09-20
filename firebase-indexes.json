@@ -21,6 +21,44 @@
         }
       ]
     },
+    {
+      "collectionGroup": "employees",
+      "queryScope": "COLLECTION", 
+      "fields": [
+        {
+          "fieldPath": "skills.name",
+          "arrayConfig": "CONTAINS"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "employees",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "availability",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name", 
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "employees",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "department",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING" 
+        }
+      ]
+    },
     
     // Project indexes for managers
     {

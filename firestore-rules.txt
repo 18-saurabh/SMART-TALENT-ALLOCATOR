@@ -11,6 +11,10 @@ service cloud.firestore {
     match /employees/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow employees to update their skills and availability
+      allow update: if request.auth != null && request.auth.uid == userId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['skills', 'availability', 'availabilityNotes', 'department', 'position', 'lastUpdated']);
     }
     
     // Allow managers to read employee profiles for team management
