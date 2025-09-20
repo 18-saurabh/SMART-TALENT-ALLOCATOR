@@ -1,28 +1,6 @@
 {
   "indexes": [
-    // Previous indexes (commented out - remove these from Firebase Console)
-    // {
-    //   "collectionGroup": "managers",
-    //   "queryScope": "COLLECTION",
-    //   "fields": [
-    //     {
-    //       "fieldPath": "email",
-    //       "order": "ASCENDING"
-    //     }
-    //   ]
-    // },
-    // {
-    //   "collectionGroup": "employees",
-    //   "queryScope": "COLLECTION", 
-    //   "fields": [
-    //     {
-    //       "fieldPath": "email",
-    //       "order": "ASCENDING"
-    //     }
-    //   ]
-    // },
-    
-    // New indexes for enhanced functionality
+    // User indexes
     {
       "collectionGroup": "managers",
       "queryScope": "COLLECTION",
@@ -43,6 +21,8 @@
         }
       ]
     },
+    
+    // Project indexes for managers
     {
       "collectionGroup": "projects",
       "queryScope": "COLLECTION",
@@ -62,6 +42,22 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "managerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    
+    // Project indexes for employees
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "assignedEmployees",
           "arrayConfig": "CONTAINS"
         },
@@ -76,6 +72,22 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "assignedEmployees",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "deadline",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    
+    // General project indexes
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "status",
           "order": "ASCENDING"
         },
@@ -85,6 +97,22 @@
         }
       ]
     },
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "deadline",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    
+    // Task indexes
     {
       "collectionGroup": "tasks",
       "queryScope": "COLLECTION_GROUP",

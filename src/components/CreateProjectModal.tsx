@@ -41,7 +41,7 @@ export default function CreateProjectModal({ isOpen, onClose, employees }: Creat
         assignedEmployees: formData.assignedEmployees,
         assignedEmployeeNames,
         deadline: new Date(formData.deadline),
-        budget: formData.budget ? parseFloat(formData.budget) : undefined,
+        budget: formData.budget ? parseFloat(formData.budget) : null,
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
       });
 

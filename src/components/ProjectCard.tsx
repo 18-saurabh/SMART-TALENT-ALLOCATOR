@@ -176,19 +176,59 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
                     Submit for Review
                   </button>
                 )}
-                {project.status === 'review' && (
-                  <button
-                    onClick={() => handleStatusChange('in-progress')}
-                    className="px-3 py-1 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-colors duration-200"
-                  >
-                    Continue Work
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+               {project.status === 'review' && (
+                 <button
+                   onClick={() => handleStatusChange('in-progress')}
+                   className="px-3 py-1 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-colors duration-200"
+                 >
+                   Continue Work
+                 </button>
+               )}
+             </>
+           )}
+         </div>
+       </div>
+       )}
+
+       {/* Actions for Managers */}
+       {isManager && project.status === 'review' && (
+         <div className="px-6 pb-6">
+           <div className="flex flex-wrap gap-2">
+             <button
+               onClick={() => handleStatusChange('completed')}
+               className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-700 transition-colors duration-200"
+             >
+               Mark Complete
+             </button>
+             <button
+               onClick={() => handleStatusChange('in-progress')}
+               className="px-3 py-1 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-colors duration-200"
+             >
+               Request Changes
+             </button>
+           </div>
+         </div>
+       )}
+
+       {/* Actions for Managers - Other statuses */}
+       {isManager && project.status !== 'review' && project.status !== 'completed' && (
+         <div className="px-6 pb-6">
+           <div className="flex flex-wrap gap-2">
+             <button
+               onClick={() => handleStatusChange('in-progress')}
+               className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors duration-200"
+             >
+               Start Project
+             </button>
+             <button
+               onClick={() => handleStatusChange('on-hold')}
+               className="px-3 py-1 bg-red-600 text-white text-xs rounded-md hover:bg-red-700 transition-colors duration-200"
+             >
+               Put On Hold
+             </button>
+           </div>
+         </div>
+       )}
+     </div>
+   );
+ }

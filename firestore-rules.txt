@@ -37,11 +37,11 @@ service cloud.firestore {
     
     // Projects collection rules
     match /projects/{projectId} {
-      // Managers can create, read, update projects
-      allow create, read, update: if request.auth != null && 
+      // Managers can create, read, update, delete projects
+      allow create, read, update, delete: if request.auth != null && 
         exists(/databases/$(database)/documents/managers/$(request.auth.uid));
       
-      // Employees can read projects assigned to them and update status/progress
+      // Employees can read projects assigned to them
       allow read: if request.auth != null && 
         exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
         request.auth.uid in resource.data.assignedEmployees;
@@ -50,8 +50,19 @@ service cloud.firestore {
       allow update: if request.auth != null && 
         exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
         request.auth.uid in resource.data.assignedEmployees &&
-        // Only allow updating specific fields
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'progress', 'updatedAt']);
+        // Allow updating status, progress, and updatedAt fields
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'progress', 'updatedAt']) &&
+        // Employees can only change status to specific values
+        (
+          // Can start work (planning -> in-progress)
+          (resource.data.status == 'planning' && request.resource.data.status == 'in-progress') ||
+          // Can submit for review (in-progress -> review)
+          (resource.data.status == 'in-progress' && request.resource.data.status == 'review') ||
+          // Can continue work after manager feedback (review -> in-progress)
+          (resource.data.status == 'review' && request.resource.data.status == 'in-progress') ||
+          // Can update progress while in-progress
+          (resource.data.status == 'in-progress' && request.resource.data.status == 'in-progress')
+        );
     }
     
     // Tasks subcollection within projects

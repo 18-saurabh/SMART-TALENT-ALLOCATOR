@@ -139,6 +139,51 @@ export default function ManagerDashboard() {
                 />
               ))}
             </div>
+            
+            {/* Projects Pending Review */}
+            {projectsInReview > 0 && (
+              <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
+                  Projects Pending Review ({projectsInReview})
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {projects
+                    .filter(p => p.status === 'review')
+                    .map((project) => (
+                      <div key={project.id} className="border border-purple-200 rounded-lg p-4 bg-purple-50 hover:shadow-md transition-shadow duration-200">
+                        <h4 className="font-medium text-gray-900 mb-2">{project.title}</h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                          Submitted by: {project.assignedEmployeeNames.join(', ')}
+                        </p>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm text-gray-600">Progress: {project.progress}%</span>
+                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${project.progress}%` }}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => updateProjectStatus(project.id, 'completed', 100)}
+                            className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors duration-200"
+                          >
+                            Approve & Complete
+                          </button>
+                          <button
+                            onClick={() => updateProjectStatus(project.id, 'in-progress', Math.max(project.progress - 10, 0))}
+                            className="flex-1 bg-orange-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors duration-200"
+                          >
+                            Request Changes
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
           )}
         </div>
 
