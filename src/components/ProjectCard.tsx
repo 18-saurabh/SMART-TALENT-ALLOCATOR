@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users, Tag, DollarSign, Clock, AlertCircle } from 'lucide-react';
+import { Calendar, Users, Tag, IndianRupee, Clock, AlertCircle } from 'lucide-react';
 import { Project } from '../hooks/useProjects';
 
 interface ProjectCardProps {
@@ -119,9 +119,9 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
         {/* Budget */}
         {project.budget && (
           <div className="flex items-center space-x-2">
-            <DollarSign className="h-4 w-4 text-gray-500" />
+            <IndianRupee className="h-4 w-4 text-gray-500" />
             <span className="text-sm text-gray-600">
-              ${project.budget.toLocaleString()}
+              ₹{project.budget.toLocaleString('en-IN')}
             </span>
           </div>
         )}
