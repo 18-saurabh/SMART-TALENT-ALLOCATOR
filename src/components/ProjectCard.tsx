@@ -31,6 +31,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
   };
 
   const isOverdue = new Date() > project.deadline;
+  const isCompleted = project.status === 'completed';
   const daysUntilDeadline = Math.ceil((project.deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
 
   const handleStatusChange = (newStatus: Project['status']) => {
@@ -53,8 +54,13 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
             <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(project.priority)}`}>
               {project.priority.toUpperCase()}
             </span>
-            {isOverdue && (
+            {isOverdue && !isCompleted && (
               <AlertCircle className="h-5 w-5 text-red-500" title="Overdue" />
+            )}
+            {isCompleted && (
+              <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                COMPLETED
+              </span>
             )}
           </div>
         </div>
@@ -101,16 +107,21 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
         {/* Deadline */}
         <div className="flex items-center space-x-2">
           <Calendar className="h-4 w-4 text-gray-500" />
-          <span className={`text-sm ${isOverdue ? 'text-red-600 font-medium' : 'text-gray-600'}`}>
+          <span className={`text-sm ${isOverdue && !isCompleted ? 'text-red-600 font-medium' : 'text-gray-600'}`}>
             {project.deadline.toLocaleDateString()}
-            {daysUntilDeadline >= 0 && !isOverdue && (
+            {daysUntilDeadline >= 0 && !isOverdue && !isCompleted && (
               <span className="ml-2 text-xs text-gray-500">
                 ({daysUntilDeadline} days left)
               </span>
             )}
-            {isOverdue && (
+            {isOverdue && !isCompleted && (
               <span className="ml-2 text-xs text-red-500 font-medium">
                 (Overdue)
+              </span>
+            )}
+            {isCompleted && (
+              <span className="ml-2 text-xs text-green-600 font-medium">
+                (Completed on time)
               </span>
             )}
           </span>

@@ -196,7 +196,7 @@ export default function ManagerDashboard() {
                             </button>
                             <button
                               onClick={() => updateProjectStatus(project.id, 'in-progress', Math.max(project.progress - 10, 0))}
-                              className="flex-1 bg-orange-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors duration-200"
+                              className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors duration-200"
                             >
                               Request Changes
                             </button>
@@ -389,14 +389,29 @@ export default function ManagerDashboard() {
                   {upcomingDeadlines.map((project) => {
                     const daysLeft = Math.ceil((project.deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
                     const isOverdue = daysLeft < 0;
+                    const isCompleted = project.status === 'completed';
                     
                     return (
-                      <div key={project.id} className={`p-3 rounded-lg ${isOverdue ? 'bg-red-50' : daysLeft <= 3 ? 'bg-yellow-50' : 'bg-blue-50'}`}>
-                        <p className={`text-sm font-medium ${isOverdue ? 'text-red-900' : daysLeft <= 3 ? 'text-yellow-900' : 'text-blue-900'}`}>
+                      <div key={project.id} className={`p-3 rounded-lg ${
+                        isCompleted ? 'bg-green-50' :
+                        isOverdue ? 'bg-red-50' : 
+                        daysLeft <= 3 ? 'bg-yellow-50' : 'bg-blue-50'
+                      }`}>
+                        <p className={`text-sm font-medium ${
+                          isCompleted ? 'text-green-900' :
+                          isOverdue ? 'text-red-900' : 
+                          daysLeft <= 3 ? 'text-yellow-900' : 'text-blue-900'
+                        }`}>
                           {project.title}
                         </p>
-                        <p className={`text-xs ${isOverdue ? 'text-red-700' : daysLeft <= 3 ? 'text-yellow-700' : 'text-blue-700'}`}>
-                          {isOverdue ? `Overdue by ${Math.abs(daysLeft)} days` : `${daysLeft} days left`}
+                        <p className={`text-xs ${
+                          isCompleted ? 'text-green-700' :
+                          isOverdue ? 'text-red-700' : 
+                          daysLeft <= 3 ? 'text-yellow-700' : 'text-blue-700'
+                        }`}>
+                          {isCompleted ? 'Completed' :
+                           isOverdue ? `Overdue by ${Math.abs(daysLeft)} days` : 
+                           `${daysLeft} days left`}
                         </p>
                       </div>
                     );
