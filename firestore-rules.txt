@@ -24,5 +24,46 @@ service cloud.firestore {
       allow read: if request.auth != null && 
         exists(/databases/$(database)/documents/employees/$(request.auth.uid));
     }
+    
+    // Allow reading user profiles by email for authentication flow
+    // This is needed during sign-in to determine user role
+    match /managers/{document} {
+      allow read: if request.auth != null;
+    }
+    
+    match /employees/{document} {
+      allow read: if request.auth != null;
+    }
+    
+    // Projects collection rules
+    match /projects/{projectId} {
+      // Managers can create, read, update projects
+      allow create, read, update: if request.auth != null && 
+        exists(/databases/$(database)/documents/managers/$(request.auth.uid));
+      
+      // Employees can read projects assigned to them and update status/progress
+      allow read: if request.auth != null && 
+        exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
+        request.auth.uid in resource.data.assignedEmployees;
+      
+      // Employees can update project status and progress for assigned projects
+      allow update: if request.auth != null && 
+        exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
+        request.auth.uid in resource.data.assignedEmployees &&
+        // Only allow updating specific fields
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'progress', 'updatedAt']);
+    }
+    
+    // Tasks subcollection within projects
+    match /projects/{projectId}/tasks/{taskId} {
+      // Managers can create, read, update, delete tasks
+      allow read, write: if request.auth != null && 
+        exists(/databases/$(database)/documents/managers/$(request.auth.uid));
+      
+      // Employees can read and update tasks assigned to them
+      allow read, update: if request.auth != null && 
+        exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
+        request.auth.uid == resource.data.assignedTo;
+    }
   }
 }

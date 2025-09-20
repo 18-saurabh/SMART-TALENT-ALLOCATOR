@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   onAuthStateChanged
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../config/firebase';
 
 interface UserProfile {
@@ -46,26 +46,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function checkEmailRole(email: string): Promise<'manager' | 'employee' | null> {
+  async function getUserProfile(uid: string): Promise<UserProfile | null> {
     try {
-      const managerQuery = await getDocs(query(collection(db, 'managers'), where('email', '==', email)));
-      const employeeQuery = await getDocs(query(collection(db, 'employees'), where('email', '==', email)));
-    
-      if (!managerQuery.empty) return 'manager';
-      if (!employeeQuery.empty) return 'employee';
+      // Try to get manager profile first
+      const managerDoc = await getDoc(doc(db, 'managers', uid));
+      if (managerDoc.exists()) {
+        return managerDoc.data() as UserProfile;
+      }
+      
+      // Try to get employee profile
+      const employeeDoc = await getDoc(doc(db, 'employees', uid));
+      if (employeeDoc.exists()) {
+        return employeeDoc.data() as UserProfile;
+      }
+      
       return null;
     } catch (error) {
-      console.error('Error checking email role:', error);
+      console.error('Error getting user profile:', error);
       return null;
     }
   }
 
   async function signUp(email: string, password: string, role: 'manager' | 'employee', name?: string) {
-    const existingRole = await checkEmailRole(email);
-    if (existingRole && existingRole !== role) {
-      throw new Error(`This email is already registered as a ${existingRole}`);
-    }
-
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
@@ -84,37 +86,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
-    try {
-      const role = await checkEmailRole(user.email!);
-      if (!role) {
-        throw new Error('User not found in our system');
-      }
-
-      const profileQuery = await getDocs(query(
-        collection(db, role === 'manager' ? 'managers' : 'employees'), 
-        where('email', '==', user.email!)
-      ));
-      
-      if (!profileQuery.empty) {
-        setUserProfile(profileQuery.docs[0].data() as UserProfile);
-      }
-    } catch (error) {
-      console.error('Error during sign in:', error);
-      throw error;
+    const profile = await getUserProfile(user.uid);
+    if (!profile) {
+      throw new Error('User profile not found. Please contact support.');
     }
+    setUserProfile(profile);
   }
 
   async function signInWithGoogle(role: 'manager' | 'employee') {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     
-    const existingRole = await checkEmailRole(user.email!);
-    if (existingRole && existingRole !== role) {
-      await signOut(auth);
-      throw new Error(`This Google account is already registered as a ${existingRole}`);
-    }
-
-    if (!existingRole) {
+    // Check if user already exists
+    const existingProfile = await getUserProfile(user.uid);
+    
+    if (existingProfile) {
+      if (existingProfile.role !== role) {
+        await signOut(auth);
+        throw new Error(`This Google account is already registered as a ${existingProfile.role}`);
+      }
+      setUserProfile(existingProfile);
+    } else {
+      // Create new profile
       const profile: UserProfile = {
         uid: user.uid,
         email: user.email!,
@@ -122,13 +115,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         name: user.displayName || undefined
       };
       
-      await setDoc(doc(db, role === 'manager' ? 'managers' : 'employees', user.email!), profile);
+      await setDoc(doc(db, role === 'manager' ? 'managers' : 'employees', user.uid), profile);
       setUserProfile(profile);
-    } else {
-      const profileDoc = await getDoc(doc(db, role === 'manager' ? 'managers' : 'employees', user.email!));
-      if (profileDoc.exists()) {
-        setUserProfile(profileDoc.data() as UserProfile);
-      }
     }
   }
 
@@ -140,12 +128,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const role = await checkEmailRole(user.email!);
-        if (role) {
-          const profileDoc = await getDoc(doc(db, role === 'manager' ? 'managers' : 'employees', user.email!));
-          if (profileDoc.exists()) {
-            setUserProfile(profileDoc.data() as UserProfile);
-          }
+        const profile = await getUserProfile(user.uid);
+        if (profile) {
+          setUserProfile(profile);
         }
         setCurrentUser(user);
       } else {
