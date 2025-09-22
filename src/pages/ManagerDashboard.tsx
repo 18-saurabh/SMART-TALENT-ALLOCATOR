@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Users, Target, TrendingUp, Calendar, Plus, UserCheck, AlertCircle, BarChart3, Clock, CheckCircle, Search, Star } from 'lucide-react';
+import { Users, Target, TrendingUp, Calendar, Plus, UserCheck, AlertCircle, BarChart3, Clock, CheckCircle, Search, Star, Sparkles } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
 import { useEmployees } from '../hooks/useEmployees';
 import CreateProjectModal from '../components/CreateProjectModal';
