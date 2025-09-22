@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
@@ -10,8 +10,16 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, userProfile } = useAuth();
   const navigate = useNavigate();
+
+  // Auto-redirect when user profile is loaded after successful authentication
+  useEffect(() => {
+    if (userProfile) {
+      const dashboardPath = userProfile.role === 'manager' ? '/manager-dashboard' : '/employee-dashboard';
+      navigate(dashboardPath, { replace: true });
+    }
+  }, [userProfile, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,10 +28,23 @@ export default function SignIn() {
       setError('');
       setLoading(true);
       await signIn(email, password);
-      navigate('/');
+      // Navigation will be handled by useEffect when userProfile updates
     } catch (error: any) {
       setError(error.message || 'Failed to sign in');
+      setLoading(false);
     } finally {
+      // Don't set loading to false here as we want to show loading during redirect
+    }
+  };
+
+  const handleGoogleSignIn = async (role: 'manager' | 'employee') => {
+    try {
+      setError('');
+      setLoading(true);
+      await signInWithGoogle(role);
+      // Navigation will be handled by useEffect when userProfile updates
+    } catch (error: any) {
+      setError(error.message || 'Failed to sign in with Google');
       setLoading(false);
     }
   };
@@ -107,7 +128,7 @@ export default function SignIn() {
             </div>
 
             <button
-              onClick={() => signInWithGoogle('employee')}
+              onClick={() => handleGoogleSignIn('employee')}
               disabled={loading}
               className="mt-3 w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2"
             >

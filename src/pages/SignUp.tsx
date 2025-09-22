@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, Eye, EyeOff, User, Users, UserCheck } from 'lucide-react';
@@ -16,8 +16,16 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, userProfile } = useAuth();
   const navigate = useNavigate();
+
+  // Auto-redirect when user profile is loaded after successful authentication
+  useEffect(() => {
+    if (userProfile) {
+      const dashboardPath = userProfile.role === 'manager' ? '/manager-dashboard' : '/employee-dashboard';
+      navigate(dashboardPath, { replace: true });
+    }
+  }, [userProfile, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,11 +44,12 @@ export default function SignUp() {
       setError('');
       setLoading(true);
       await signUp(formData.email, formData.password, formData.role, formData.name);
-      navigate('/');
+      // Navigation will be handled by useEffect when userProfile updates
     } catch (error: any) {
       setError(error.message || 'Failed to create account');
-    } finally {
       setLoading(false);
+    } finally {
+      // Don't set loading to false here as we want to show loading during redirect
     }
   };
 
@@ -49,11 +58,12 @@ export default function SignUp() {
       setError('');
       setLoading(true);
       await signInWithGoogle(formData.role);
-      navigate('/');
+      // Navigation will be handled by useEffect when userProfile updates
     } catch (error: any) {
       setError(error.message || 'Failed to sign up with Google');
-    } finally {
       setLoading(false);
+    } finally {
+      // Don't set loading to false here as we want to show loading during redirect
     }
   };
 

@@ -23,11 +23,15 @@ function AppContent() {
           <Route path="/about" element={<About />} />
           <Route 
             path="/signin" 
-            element={currentUser ? <Navigate to="/" replace /> : <SignIn />} 
+            element={currentUser && userProfile ? (
+              <Navigate to={userProfile.role === 'manager' ? '/manager-dashboard' : '/employee-dashboard'} replace />
+            ) : <SignIn />} 
           />
           <Route 
             path="/signup" 
-            element={currentUser ? <Navigate to="/" replace /> : <SignUp />} 
+            element={currentUser && userProfile ? (
+              <Navigate to={userProfile.role === 'manager' ? '/manager-dashboard' : '/employee-dashboard'} replace />
+            ) : <SignUp />} 
           />
           <Route 
             path="/employee-dashboard" 
