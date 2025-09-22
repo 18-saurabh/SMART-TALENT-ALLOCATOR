@@ -85,22 +85,35 @@ export default function ManagerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-rotate"></div>
+      </div>
+      
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Manager Dashboard
+            <div className="flex items-center space-x-2 mb-4">
+              <Sparkles className="h-6 w-6 text-blue-600 animate-float-rotate" />
+              <span className="text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full">
+                Manager Dashboard
+              </span>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 animate-float-up">
+              Welcome back, <span className="gradient-text">{userProfile?.name || 'Manager'}</span>!
             </h1>
-            <p className="text-gray-600 mt-2">
-              Welcome back, {userProfile?.name || 'Manager'}! Here's your team overview
+            <p className="text-gray-600 mt-2 animate-float-down">
+              Here's your team overview and project management hub
             </p>
           </div>
           <div className="flex space-x-3 mt-4 sm:mt-0">
             <button 
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2"
+              className="modern-btn px-4 py-2 font-medium flex items-center space-x-2 animate-pulse-glow"
             >
               <Plus className="h-4 w-4" />
               <span>New Project</span>
@@ -109,11 +122,15 @@ export default function ManagerDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 relative z-10">
           {stats.map((stat, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+            <div 
+              key={index} 
+              className="modern-card p-6 group animate-float-up"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="p-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg group-hover:shadow-md transition-all duration-300">
                   {stat.icon}
                 </div>
               </div>
@@ -127,31 +144,31 @@ export default function ManagerDashboard() {
         </div>
 
         {/* Projects Grid */}
-        <div className="mb-8">
+        <div className="mb-8 relative z-10">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Recent Projects</h2>
+            <h2 className="text-2xl font-bold text-gray-900 animate-float-up">Recent Projects</h2>
             {projects.length > 6 && (
-              <button className="text-blue-600 hover:text-blue-700 font-medium">
+              <button className="text-blue-600 hover:text-blue-700 font-medium animate-float-down">
                 View All Projects
               </button>
             )}
           </div>
           
           {projects.length === 0 ? (
-            <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+            <div className="modern-card p-12 text-center animate-float-up">
               <Target className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No Projects Yet</h3>
               <p className="text-gray-600 mb-6">Create your first project to get started with team management.</p>
               <button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
+                className="modern-btn px-6 py-3 font-medium animate-pulse-glow"
               >
                 Create First Project
               </button>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-float-up">
                 {recentProjects.map((project) => (
                   <ProjectCard
                     key={project.id}
@@ -164,16 +181,16 @@ export default function ManagerDashboard() {
               
               {/* Projects Pending Review */}
               {projectsInReview > 0 && (
-                <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <div className="mt-8 modern-card p-6 animate-float-down">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
+                    <CheckCircle className="h-5 w-5 text-purple-600 mr-2 animate-pulse" />
                     Projects Pending Review ({projectsInReview})
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {projects
                       .filter(p => p.status === 'review')
                       .map((project) => (
-                        <div key={project.id} className="border border-purple-200 rounded-lg p-4 bg-purple-50 hover:shadow-md transition-shadow duration-200">
+                        <div key={project.id} className="border border-purple-200 rounded-xl p-4 bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-lg transition-all duration-300 backdrop-blur-sm">
                           <h4 className="font-medium text-gray-900 mb-2">{project.title}</h4>
                           <p className="text-sm text-gray-600 mb-3">
                             Submitted by: {project.assignedEmployeeNames.join(', ')}
@@ -190,13 +207,13 @@ export default function ManagerDashboard() {
                           <div className="flex space-x-2">
                             <button
                               onClick={() => updateProjectStatus(project.id, 'completed', 100)}
-                              className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors duration-200"
+                              className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
                             >
                               Approve & Complete
                             </button>
                             <button
                               onClick={() => updateProjectStatus(project.id, 'in-progress', Math.max(project.progress - 10, 0))}
-                              className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors duration-200"
+                              className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
                             >
                               Request Changes
                             </button>
@@ -210,11 +227,11 @@ export default function ManagerDashboard() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
           {/* Team Overview */}
           <div className="lg:col-span-2">
             {/* Employee Search and Filter */}
-            <div className="mb-6">
+            <div className="mb-6 animate-float-up">
               <EmployeeSearch
                 employees={allEmployees}
                 onFilter={filterEmployees}
@@ -224,7 +241,7 @@ export default function ManagerDashboard() {
             </div>
 
             {/* Team Members */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+            <div className="modern-card p-6 animate-float-down">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">
                   Team Overview
@@ -265,11 +282,11 @@ export default function ManagerDashboard() {
                     return (
                       <div 
                         key={employee.uid} 
-                        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                        className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90"
                         onClick={() => setSelectedEmployee(selectedEmployee === employee.uid ? null : employee.uid)}
                       >
                         <div className="flex items-center space-x-3 mb-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center animate-pulse-glow">
                             <span className="text-blue-600 font-semibold text-sm">
                               {employee.name.charAt(0).toUpperCase()}
                             </span>
@@ -282,7 +299,7 @@ export default function ManagerDashboard() {
                             )}
                           </div>
                           <div className="text-right">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(employee.availability)}`}>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(employee.availability)} animate-pulse`}>
                               {employee.availability}
                             </span>
                           </div>
@@ -309,9 +326,9 @@ export default function ManagerDashboard() {
                             {employee.skills.slice(0, 3).map((skill, index) => (
                               <span 
                                 key={index}
-                                className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md flex items-center"
+                                className="px-2 py-1 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 text-xs rounded-md flex items-center hover:shadow-sm transition-all duration-300"
                               >
-                                <Star className="h-3 w-3 mr-1" />
+                                <Star className="h-3 w-3 mr-1 animate-pulse" />
                                 {skill.name}
                               </span>
                             ))}
@@ -325,7 +342,7 @@ export default function ManagerDashboard() {
                         
                         {/* Expanded Details */}
                         {selectedEmployee === employee.uid && (
-                          <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                          <div className="mt-4 pt-4 border-t border-gray-200 space-y-4 animate-float-down">
                             <SkillsManager
                               skills={employee.skills}
                               onAddSkill={async () => {}}
@@ -352,35 +369,35 @@ export default function ManagerDashboard() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+            <div className="modern-card p-6 animate-float-up sticky top-8">
               <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <button 
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                  className="w-full text-left p-3 hover:bg-blue-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-transparent hover:border-blue-200 hover:shadow-md group"
                 >
-                  <Plus className="h-5 w-5 text-blue-600" />
+                  <Plus className="h-5 w-5 text-blue-600 group-hover:animate-pulse" />
                   <span className="text-gray-700">Create Project</span>
                 </button>
                 <button 
                   onClick={() => setIsReportsModalOpen(true)}
-                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                  className="w-full text-left p-3 hover:bg-purple-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-transparent hover:border-purple-200 hover:shadow-md group"
                 >
-                  <BarChart3 className="h-5 w-5 text-purple-600" />
+                  <BarChart3 className="h-5 w-5 text-purple-600 group-hover:animate-pulse" />
                   <span className="text-gray-700">View Reports</span>
                 </button>
                 <button 
                   onClick={() => setIsTeamManagementModalOpen(true)}
-                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 flex items-center space-x-3"
+                  className="w-full text-left p-3 hover:bg-green-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-transparent hover:border-green-200 hover:shadow-md group"
                 >
-                  <Users className="h-5 w-5 text-green-600" />
+                  <Users className="h-5 w-5 text-green-600 group-hover:animate-pulse" />
                   <span className="text-gray-700">Manage Team</span>
                 </button>
               </div>
             </div>
 
             {/* Upcoming Deadlines */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+            <div className="modern-card p-6 animate-float-down">
               <h3 className="font-semibold text-gray-900 mb-4">Upcoming Deadlines</h3>
               {upcomingDeadlines.length === 0 ? (
                 <p className="text-gray-500 text-sm">No upcoming deadlines</p>
@@ -396,7 +413,7 @@ export default function ManagerDashboard() {
                         isCompleted ? 'bg-green-50' :
                         isOverdue ? 'bg-red-50' : 
                         daysLeft <= 3 ? 'bg-yellow-50' : 'bg-blue-50'
-                      }`}>
+                      } hover:shadow-md transition-all duration-300`}>
                         <p className={`text-sm font-medium ${
                           isCompleted ? 'text-green-900' :
                           isOverdue ? 'text-red-900' : 

@@ -75,22 +75,29 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-rotate"></div>
+      </div>
+      
       <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
-          <p className="mt-2 text-gray-600">Join the Smart Talent Allocator platform</p>
+        <div className="text-center animate-float-up">
+          <h2 className="text-3xl font-bold text-gray-900 gradient-text">Create your account</h2>
+          <p className="mt-2 text-gray-600 animate-float-down">Join the Smart Talent Allocator platform</p>
         </div>
 
-        <div className="bg-white shadow-xl rounded-2xl p-8">
+        <div className="modern-card p-8 animate-float-up">
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+            <div className="mb-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-700 rounded-lg animate-pulse-glow">
               {error}
             </div>
           )}
 
           {/* Role Selection */}
-          <div className="mb-6">
+          <div className="mb-6 animate-float-down">
             <label className="block text-sm font-medium text-gray-700 mb-3">
               I am a:
             </label>
@@ -100,11 +107,11 @@ export default function SignUp() {
                 onClick={() => setFormData({ ...formData, role: 'employee' })}
                 className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all duration-200 ${
                   formData.role === 'employee'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-700 shadow-lg'
+                    : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
                 }`}
               >
-                <User className="h-6 w-6" />
+                <User className={`h-6 w-6 ${formData.role === 'employee' ? 'animate-pulse' : ''}`} />
                 <span className="font-medium">Employee</span>
               </button>
               <button
@@ -112,11 +119,11 @@ export default function SignUp() {
                 onClick={() => setFormData({ ...formData, role: 'manager' })}
                 className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all duration-200 ${
                   formData.role === 'manager'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-700 shadow-lg'
+                    : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
                 }`}
               >
-                <UserCheck className="h-6 w-6" />
+                <UserCheck className={`h-6 w-6 ${formData.role === 'manager' ? 'animate-pulse' : ''}`} />
                 <span className="font-medium">Manager</span>
               </button>
             </div>
@@ -136,7 +143,7 @@ export default function SignUp() {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white/90"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -155,7 +162,7 @@ export default function SignUp() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white/90"
                   placeholder="Enter your email"
                 />
               </div>
@@ -174,7 +181,7 @@ export default function SignUp() {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white/90"
                   placeholder="Create a password"
                 />
                 <button
@@ -200,7 +207,7 @@ export default function SignUp() {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white/90"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -216,7 +223,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-200"
+             className="modern-btn w-full py-3 px-4 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-300 animate-pulse-glow"
             >
               {loading ? 'Creating Account...' : 'Create Account'}
             </button>
@@ -235,7 +242,7 @@ export default function SignUp() {
             <button
               onClick={handleGoogleSignUp}
               disabled={loading}
-              className="mt-3 w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2"
+             className="mt-3 w-full bg-white/90 backdrop-blur-sm border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center space-x-2"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -250,7 +257,7 @@ export default function SignUp() {
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Already have an account?{' '}
-              <Link to="/signin" className="text-blue-600 hover:text-blue-700 font-semibold">
+             <Link to="/signin" className="text-blue-600 hover:text-blue-700 font-semibold animate-pulse">
                 Sign in
               </Link>
             </p>

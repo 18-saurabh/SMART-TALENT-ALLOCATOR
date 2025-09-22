@@ -11,7 +11,7 @@ export default function ProfileCard() {
   const currentEmployee = getCurrentEmployee();
 
   return (
-    <div className="modern-card p-6 group">
+    <div className="modern-card p-6 group animate-float-up hover:shadow-2xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
           <User className="h-5 w-5 text-blue-600 animate-float-up" />
@@ -19,7 +19,7 @@ export default function ProfileCard() {
         </div>
         <Link
           to="/employee-profile?tab=edit"
-          className="modern-btn text-sm flex items-center space-x-2"
+          className="modern-btn text-sm flex items-center space-x-2 animate-pulse-glow"
         >
           <Edit3 className="h-4 w-4" />
           <span>Edit</span>
@@ -27,20 +27,20 @@ export default function ProfileCard() {
       </div>
 
       <div className="flex items-center space-x-4 mb-6">
-        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center animate-pulse-glow">
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center animate-pulse-glow shadow-lg border border-blue-200">
           <span className="text-2xl font-bold text-blue-600">
             {userProfile?.name?.charAt(0).toUpperCase() || 'U'}
           </span>
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900">{userProfile?.name}</h3>
-          <p className="text-blue-600 capitalize font-medium">{userProfile?.role}</p>
-          <p className="text-gray-500 text-sm">{userProfile?.email}</p>
+          <h3 className="text-lg font-semibold text-gray-900 animate-float-up">{userProfile?.name}</h3>
+          <p className="text-blue-600 capitalize font-medium animate-float-down">{userProfile?.role}</p>
+          <p className="text-gray-500 text-sm animate-float-up">{userProfile?.email}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-blue-200 hover:border-blue-300">
           <Briefcase className="h-5 w-5 text-blue-500 group-hover:animate-pulse" />
           <div>
             <p className="text-sm font-medium text-blue-700">Department</p>
@@ -48,7 +48,7 @@ export default function ProfileCard() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-purple-200 hover:border-purple-300">
           <MapPin className="h-5 w-5 text-purple-500 group-hover:animate-pulse" />
           <div>
             <p className="text-sm font-medium text-purple-700">Position</p>
@@ -56,7 +56,7 @@ export default function ProfileCard() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-green-200 hover:border-green-300">
           <User className="h-5 w-5 text-green-500 group-hover:animate-pulse" />
           <div>
             <p className="text-sm font-medium text-green-700">Skills</p>
@@ -64,7 +64,7 @@ export default function ProfileCard() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-yellow-200 hover:border-yellow-300">
           <Calendar className="h-5 w-5 text-yellow-500 group-hover:animate-pulse" />
           <div>
             <p className="text-sm font-medium text-yellow-700">Availability</p>
@@ -79,17 +79,17 @@ export default function ProfileCard() {
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-4 pt-4 border-t border-gray-200 animate-float-up">
         <div className="flex space-x-3">
           <Link
             to="/employee-profile?tab=edit"
-            className="flex-1 text-center py-2 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+            className="flex-1 text-center py-2 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300 border border-blue-700"
           >
             Edit Profile
           </Link>
           <Link
             to="/employee-profile?tab=skills"
-            className="flex-1 text-center py-2 px-4 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+            className="flex-1 text-center py-2 px-4 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300 border border-gray-300"
           >
             Manage Skills
           </Link>

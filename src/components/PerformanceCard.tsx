@@ -81,51 +81,51 @@ export default function PerformanceCard() {
   }
 
   return (
-    <div className="modern-card p-6 group">
+    <div className="modern-card p-6 group animate-float-up hover:shadow-2xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
           <BarChart3 className="h-5 w-5 text-purple-600 animate-float-up" />
           <h2 className="text-xl font-semibold text-gray-900">My Performance</h2>
         </div>
-        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full text-xl font-bold ${getScoreColor(metrics.productivityScore)} animate-pulse-glow`}>
+        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full text-xl font-bold ${getScoreColor(metrics.productivityScore)} animate-pulse-glow shadow-lg border-2`}>
           {metrics.productivityScore}
         </div>
       </div>
 
       <div className="mb-4">
-        <p className="text-sm text-gray-600 mb-2">Overall Performance Level</p>
-        <p className="text-lg font-semibold gradient-text">{getPerformanceLevel(metrics.productivityScore)}</p>
+        <p className="text-sm text-gray-600 mb-2 animate-float-up">Overall Performance Level</p>
+        <p className="text-lg font-semibold gradient-text animate-float-down">{getPerformanceLevel(metrics.productivityScore)}</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-blue-200 hover:border-blue-300">
           <Target className="h-6 w-6 text-blue-600 mx-auto mb-2 group-hover:animate-pulse" />
           <p className="text-2xl font-bold text-blue-600">{metrics.totalProjects}</p>
           <p className="text-xs text-blue-700">Total Projects</p>
         </div>
 
-        <div className="text-center p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="text-center p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-green-200 hover:border-green-300">
           <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2 group-hover:animate-pulse" />
           <p className="text-2xl font-bold text-green-600">{metrics.completedProjects}</p>
           <p className="text-xs text-green-700">Completed</p>
         </div>
 
-        <div className="text-center p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="text-center p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-purple-200 hover:border-purple-300">
           <TrendingUp className="h-6 w-6 text-purple-600 mx-auto mb-2 group-hover:animate-pulse" />
           <p className="text-2xl font-bold text-purple-600">{metrics.averageProgress}%</p>
           <p className="text-xs text-purple-700">Avg Progress</p>
         </div>
 
-        <div className="text-center p-3 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg hover:shadow-md transition-all duration-300 group">
+        <div className="text-center p-3 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-yellow-200 hover:border-yellow-300">
           <Clock className="h-6 w-6 text-yellow-600 mx-auto mb-2 group-hover:animate-pulse" />
           <p className="text-2xl font-bold text-yellow-600">{metrics.onTimeDelivery}%</p>
           <p className="text-xs text-yellow-700">On Time</p>
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 hover:shadow-md transition-all duration-300 animate-float-up">
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 hover:shadow-lg transition-all duration-300 animate-float-up">
         <div className="flex items-center space-x-2 mb-2">
-          <Award className="h-5 w-5 text-purple-600 animate-pulse" />
+          <Award className="h-5 w-5 text-purple-600 animate-pulse-glow" />
           <h3 className="font-semibold text-gray-900">Recent Achievement</h3>
         </div>
         <p className="text-sm text-gray-700">

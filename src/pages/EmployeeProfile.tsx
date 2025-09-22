@@ -53,26 +53,33 @@ export default function EmployeeProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-rotate"></div>
+      </div>
+      
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-gray-600 mt-2">
+        <div className="mb-8 relative z-10">
+          <h1 className="text-3xl font-bold text-gray-900 gradient-text animate-float-up">My Profile</h1>
+          <p className="text-gray-600 mt-2 animate-float-down">
             Manage your profile, skills and availability to help with better project allocation
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
+        <div className="mb-8 relative z-10">
+          <div className="border-b border-gray-200 animate-float-up">
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => handleTabChange('profile')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'profile'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-600 animate-pulse-glow'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
                 <User className="h-4 w-4 inline mr-2" />
@@ -80,10 +87,10 @@ export default function EmployeeProfile() {
               </button>
               <button
                 onClick={() => handleTabChange('edit')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'edit'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-600 animate-pulse-glow'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
                 <Edit3 className="h-4 w-4 inline mr-2" />
@@ -91,10 +98,10 @@ export default function EmployeeProfile() {
               </button>
               <button
                 onClick={() => handleTabChange('skills')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'skills'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-600 animate-pulse-glow'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
                 <Star className="h-4 w-4 inline mr-2" />
@@ -104,42 +111,42 @@ export default function EmployeeProfile() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
           {/* Profile Info */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-              <div className="text-center mb-6">
-                <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="modern-card p-6 animate-float-up sticky top-8">
+              <div className="text-center mb-6 animate-float-down">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-glow shadow-lg border border-blue-200">
                   <span className="text-3xl font-bold text-blue-600">
                     {currentEmployee.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900">{currentEmployee.name}</h2>
-                <p className="text-gray-600 capitalize">{currentEmployee.role}</p>
+                <h2 className="text-xl font-semibold text-gray-900 animate-float-up">{currentEmployee.name}</h2>
+                <p className="text-gray-600 capitalize animate-float-down">{currentEmployee.role}</p>
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-50 transition-all duration-300">
                   <Mail className="h-5 w-5 text-gray-400" />
                   <span className="text-gray-700">{currentEmployee.email}</span>
                 </div>
 
                 {currentEmployee.department && (
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-purple-50 transition-all duration-300">
                     <Briefcase className="h-5 w-5 text-gray-400" />
                     <span className="text-gray-700">{currentEmployee.department}</span>
                   </div>
                 )}
 
                 {currentEmployee.position && (
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-green-50 transition-all duration-300">
                     <MapPin className="h-5 w-5 text-gray-400" />
                     <span className="text-gray-700">{currentEmployee.position}</span>
                   </div>
                 )}
 
                 {currentEmployee.joinedAt && (
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-yellow-50 transition-all duration-300">
                     <Calendar className="h-5 w-5 text-gray-400" />
                     <span className="text-gray-700">
                       Joined {currentEmployee.joinedAt.toLocaleDateString()}
@@ -148,7 +155,7 @@ export default function EmployeeProfile() {
                 )}
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="mt-6 pt-6 border-t border-gray-200 animate-float-up">
                 <div className="text-center">
                   <p className="text-sm text-gray-500">
                     Profile last updated
@@ -167,9 +174,9 @@ export default function EmployeeProfile() {
           {/* Skills and Availability */}
           <div className="lg:col-span-2">
             {activeTab === 'profile' && (
-              <div className="space-y-8">
+              <div className="space-y-8 animate-float-up">
                 {/* Profile Details Section */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <div className="modern-card p-6">
                   <ProfileDetailsManager
                     employee={currentEmployee}
                     onUpdateProfile={updateEmployeeProfile}
@@ -180,9 +187,9 @@ export default function EmployeeProfile() {
             )}
 
             {activeTab === 'edit' && (
-              <div className="space-y-8">
+              <div className="space-y-8 animate-float-up">
                 {/* Editable Profile Details Section */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <div className="modern-card p-6">
                   <ProfileDetailsManager
                     employee={currentEmployee}
                     onUpdateProfile={updateEmployeeProfile}
@@ -193,9 +200,9 @@ export default function EmployeeProfile() {
             )}
 
             {activeTab === 'skills' && (
-              <div className="space-y-8">
+              <div className="space-y-8 animate-float-up">
                 {/* Skills Section */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <div className="modern-card p-6">
                   <SkillsManager
                     skills={currentEmployee.skills}
                     onAddSkill={addSkill}
@@ -206,7 +213,7 @@ export default function EmployeeProfile() {
                 </div>
 
                 {/* Availability Section */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <div className="modern-card p-6 animate-float-down">
                   <AvailabilityManager
                     availability={currentEmployee.availability}
                     availabilityNotes={currentEmployee.availabilityNotes}
@@ -216,14 +223,14 @@ export default function EmployeeProfile() {
                 </div>
 
                 {/* Quick Stats */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
+                <div className="modern-card p-6 animate-float-up">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 animate-float-up">Quick Stats</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg hover:shadow-lg transition-all duration-300 border border-blue-200">
                       <p className="text-2xl font-bold text-blue-600">{currentEmployee.skills.length}</p>
                       <p className="text-sm text-blue-700">Skills Listed</p>
                     </div>
-                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg hover:shadow-lg transition-all duration-300 border border-green-200">
                       <p className="text-2xl font-bold text-green-600">
                         {currentEmployee.skills.filter(s => s.level === 'expert' || s.level === 'advanced').length}
                       </p>

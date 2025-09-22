@@ -19,7 +19,11 @@ function AppContent() {
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={
+            currentUser && userProfile ? (
+              <Navigate to={userProfile.role === 'manager' ? '/manager-dashboard' : '/employee-dashboard'} replace />
+            ) : <Home />
+          } />
           <Route path="/about" element={<About />} />
           <Route 
             path="/signin" 

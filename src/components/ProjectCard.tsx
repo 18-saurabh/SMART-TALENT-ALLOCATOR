@@ -45,40 +45,40 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
   };
 
   return (
-    <div className="modern-card overflow-hidden group">
+    <div className="modern-card overflow-hidden group animate-float-up hover:shadow-2xl">
       {/* Header */}
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-6 border-b border-gray-100/50">
         <div className="flex items-start justify-between mb-3">
-          <h3 className="text-xl font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">{project.title}</h3>
+          <h3 className="text-xl font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300 animate-float-up">{project.title}</h3>
           <div className="flex items-center space-x-2 ml-4">
-            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(project.priority)} animate-pulse`}>
+            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(project.priority)} animate-pulse-glow`}>
               {project.priority.toUpperCase()}
             </span>
             {isOverdue && !isCompleted && (
-              <AlertCircle className="h-5 w-5 text-red-500 animate-pulse" title="Overdue" />
+              <AlertCircle className="h-5 w-5 text-red-500 animate-pulse-glow" title="Overdue" />
             )}
             {isCompleted && (
-              <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full animate-pulse-glow">
+              <span className="px-2 py-1 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 text-xs font-medium rounded-full animate-pulse-glow border border-green-200">
                 COMPLETED
               </span>
             )}
           </div>
         </div>
         
-        <p className="text-gray-600 text-sm line-clamp-2 mb-4">{project.description}</p>
+        <p className="text-gray-600 text-sm line-clamp-2 mb-4 animate-float-down">{project.description}</p>
         
         {/* Status and Progress */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)} animate-float-up`}>
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)} animate-float-up border`}>
               {project.status.replace('-', ' ').toUpperCase()}
             </span>
-            <span className="text-sm font-medium text-gray-700">{project.progress}%</span>
+            <span className="text-sm font-medium text-gray-700 animate-pulse">{project.progress}%</span>
           </div>
           
-          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden shadow-inner">
             <div 
-              className={`h-2 rounded-full transition-all duration-500 animate-shimmer ${
+              className={`h-2 rounded-full transition-all duration-500 animate-shimmer shadow-sm ${
                 project.progress === 100 ? 'bg-green-500' :
                 project.progress > 75 ? 'bg-blue-500' :
                 project.progress > 50 ? 'bg-yellow-500' :
@@ -94,7 +94,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
       {/* Content */}
       <div className="p-6 space-y-4">
         {/* Team */}
-        <div className="flex items-center space-x-2 group/item hover:bg-blue-50 p-2 rounded-lg transition-all duration-300">
+        <div className="flex items-center space-x-2 group/item hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-blue-200">
           <Users className="h-4 w-4 text-gray-500 group-hover/item:text-blue-600 group-hover/item:animate-pulse" />
           <span className="text-sm text-gray-600">
             {project.assignedEmployeeNames.length > 0 
@@ -105,7 +105,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
         </div>
 
         {/* Deadline */}
-        <div className="flex items-center space-x-2 group/item hover:bg-gray-50 p-2 rounded-lg transition-all duration-300">
+        <div className="flex items-center space-x-2 group/item hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-gray-200">
           <Calendar className="h-4 w-4 text-gray-500 group-hover/item:text-blue-600 group-hover/item:animate-pulse" />
           <span className={`text-sm ${isOverdue && !isCompleted ? 'text-red-600 font-medium' : 'text-gray-600'}`}>
             {project.deadline.toLocaleDateString()}
@@ -129,7 +129,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
 
         {/* Budget */}
         {project.budget && (
-          <div className="flex items-center space-x-2 group/item hover:bg-green-50 p-2 rounded-lg transition-all duration-300">
+          <div className="flex items-center space-x-2 group/item hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-green-200">
             <IndianRupee className="h-4 w-4 text-gray-500 group-hover/item:text-green-600 group-hover/item:animate-pulse" />
             <span className="text-sm text-gray-600">
               ₹{project.budget.toLocaleString('en-IN')}
@@ -139,13 +139,13 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
 
         {/* Tags */}
         {project.tags.length > 0 && (
-          <div className="flex items-start space-x-2 group/item hover:bg-purple-50 p-2 rounded-lg transition-all duration-300">
+          <div className="flex items-start space-x-2 group/item hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-purple-200">
             <Tag className="h-4 w-4 text-gray-500 mt-0.5 group-hover/item:text-purple-600 group-hover/item:animate-pulse" />
             <div className="flex flex-wrap gap-1">
               {project.tags.map((tag, index) => (
                 <span 
                   key={index}
-                  className="px-2 py-1 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-xs rounded-md hover:shadow-sm transition-all duration-300"
+                  className="px-2 py-1 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-xs rounded-md hover:shadow-md transition-all duration-300 border border-gray-200"
                 >
                   {tag}
                 </span>
@@ -156,7 +156,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
 
         {/* Manager Info (for employees) */}
         {!isManager && (
-          <div className="flex items-center space-x-2 group/item hover:bg-yellow-50 p-2 rounded-lg transition-all duration-300">
+          <div className="flex items-center space-x-2 group/item hover:bg-gradient-to-r hover:from-yellow-50 hover:to-orange-50 p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-yellow-200">
             <Clock className="h-4 w-4 text-gray-500 group-hover/item:text-yellow-600 group-hover/item:animate-pulse" />
             <span className="text-sm text-gray-600">
               Manager: {project.managerName}
@@ -174,7 +174,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
                 {project.status === 'planning' && (
                   <button
                     onClick={() => handleStatusChange('in-progress')}
-                    className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+                    className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105 border border-blue-700"
                   >
                     Start Work
                   </button>
@@ -182,7 +182,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
                 {project.status === 'in-progress' && (
                   <button
                     onClick={() => handleStatusChange('review')}
-                    className="px-3 py-1 bg-purple-600 text-white text-xs rounded-md hover:bg-purple-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+                    className="px-3 py-1 bg-purple-600 text-white text-xs rounded-md hover:bg-purple-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105 border border-purple-700"
                   >
                     Submit for Review
                   </button>
@@ -190,7 +190,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
                {project.status === 'review' && (
                  <button
                    onClick={() => handleStatusChange('in-progress')}
-                   className="px-3 py-1 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+                   className="px-3 py-1 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105 border border-orange-700"
                  >
                    Continue Work
                  </button>
@@ -207,13 +207,13 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
            <div className="flex flex-wrap gap-2">
              <button
                onClick={() => handleStatusChange('completed')}
-               className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+               className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105 border border-green-700"
              >
                Mark Complete
              </button>
              <button
                onClick={() => handleStatusChange('in-progress')}
-               className="px-3 py-1 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+               className="px-3 py-1 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105 border border-orange-700"
              >
                Request Changes
              </button>
@@ -227,13 +227,13 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
            <div className="flex flex-wrap gap-2">
              <button
                onClick={() => handleStatusChange('in-progress')}
-               className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+               className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105 border border-blue-700"
              >
                Start Project
              </button>
              <button
                onClick={() => handleStatusChange('on-hold')}
-               className="px-3 py-1 bg-red-600 text-white text-xs rounded-md hover:bg-red-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+               className="px-3 py-1 bg-red-600 text-white text-xs rounded-md hover:bg-red-700 transition-all duration-300 hover:shadow-lg transform hover:scale-105 border border-red-700"
              >
                Put On Hold
              </button>
