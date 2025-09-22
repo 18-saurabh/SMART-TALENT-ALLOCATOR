@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import custom animations and design tokens */
+@import './styles/animations.css';
