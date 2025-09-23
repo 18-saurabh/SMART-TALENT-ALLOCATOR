@@ -279,6 +279,44 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Pagination Animations */
+.pagination-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.pagination-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.pagination-exit {
+  opacity: 1;
+}
+
+.pagination-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Staggered Animation for Grid Items */
+@keyframes stagger-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-animation {
+  animation: stagger-in 0.6s ease-out forwards;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

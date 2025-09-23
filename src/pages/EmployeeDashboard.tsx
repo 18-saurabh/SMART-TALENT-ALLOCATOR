@@ -1,8 +1,8 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Calendar, BarChart3, Settings, AlertCircle, UserCog, Sparkles, TrendingUp } from 'lucide-react';
+import { Calendar, BarChart3, Settings, AlertCircle, UserCog, Sparkles, TrendingUp, RefreshCw } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
 import ProfileCard from '../components/ProfileCard';
 import PerformanceCard from '../components/PerformanceCard';
@@ -16,6 +16,7 @@ export default function EmployeeDashboard() {
   const { projects, loading } = useProjects();
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
   const [isPerformanceModalOpen, setIsPerformanceModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Calculate quick stats for sidebar
   const overdueProjects = projects.filter(p => new Date() > p.deadline && p.status !== 'completed').length;
@@ -23,6 +24,10 @@ export default function EmployeeDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 flex items-center justify-center">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
+          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
+        </div>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4 animate-pulse-glow"></div>
           <p className="text-gray-600">Loading dashboard...</p>
@@ -30,6 +35,10 @@ export default function EmployeeDashboard() {
       </div>
     );
   }
+
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -48,13 +57,24 @@ export default function EmployeeDashboard() {
             <span className="text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full">
               Employee Dashboard
             </span>
+            <button
+              onClick={handleRefresh}
+              className="ml-auto p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200 group"
+              title="Refresh dashboard"
+            >
+              <RefreshCw className={`h-4 w-4 group-hover:animate-spin ${refreshKey > 0 ? 'animate-spin' : ''}`} />
+            </button>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 animate-float-up">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 animate-float-up">
             Welcome back, <span className="gradient-text">{userProfile?.name || 'Employee'}</span>!
           </h1>
-          <p className="text-gray-600 mt-2 animate-float-down">
+              <p className="text-gray-600 mt-2 animate-float-down">
             Here's your personalized dashboard overview
           </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 relative z-10">
@@ -72,12 +92,12 @@ export default function EmployeeDashboard() {
             
             {/* 3. My Projects */}
             <div className="animate-float-up" style={{ animationDelay: '0.2s' }}>
-              <ProjectsGrid />
+              <ProjectsGrid key={`projects-${refreshKey}`} />
             </div>
             
             {/* 4. Recent Activity */}
             <div className="animate-float-down" style={{ animationDelay: '0.3s' }}>
-              <ActivityFeed />
+              <ActivityFeed key={`activity-${refreshKey}`} />
             </div>
           </div>
 
@@ -144,6 +164,17 @@ export default function EmployeeDashboard() {
                     <span className="text-sm text-gray-600">Completed Projects</span>
                     <span className="text-sm font-medium text-green-600">{projects.filter(p => p.status === 'completed').length}</span>
                   </div>
+                </div>
+                
+                {/* Quick Actions */}
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={handleRefresh}
+                    className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    <span>Refresh Data</span>
+                  </button>
                 </div>
               </div>
             </div>
