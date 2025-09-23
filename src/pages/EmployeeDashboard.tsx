@@ -10,6 +10,7 @@ import ProjectsGrid from '../components/ProjectsGrid';
 import ActivityFeed from '../components/ActivityFeed';
 import CalendarModal from '../components/CalendarModal';
 import PerformanceModal from '../components/PerformanceModal';
+import AIInsightsCard from '../components/AIInsightsCard';
 
 export default function EmployeeDashboard() {
   const { userProfile } = useAuth();
@@ -88,6 +89,11 @@ export default function EmployeeDashboard() {
             {/* 2. My Performance */}
             <div className="animate-float-down" style={{ animationDelay: '0.1s' }}>
               <PerformanceCard />
+            </div>
+            
+            {/* 2.5. AI Insights */}
+            <div className="animate-float-up" style={{ animationDelay: '0.15s' }}>
+              <AIInsightsCard />
             </div>
             
             {/* 3. My Projects */}

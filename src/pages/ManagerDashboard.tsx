@@ -11,6 +11,7 @@ import ProjectCard from '../components/ProjectCard';
 import EmployeeSearch from '../components/EmployeeSearch';
 import SkillsManager from '../components/SkillsManager';
 import AvailabilityManager from '../components/AvailabilityManager';
+import TeamAIInsightsCard from '../components/TeamAIInsightsCard';
 
 export default function ManagerDashboard() {
   const { userProfile } = useAuth();
@@ -230,6 +231,11 @@ export default function ManagerDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
           {/* Team Overview */}
           <div className="lg:col-span-2">
+            {/* AI Team Insights */}
+            <div className="mb-6 animate-float-up">
+              <TeamAIInsightsCard />
+            </div>
+            
             {/* Employee Search and Filter */}
             <div className="mb-6 animate-float-up">
               <EmployeeSearch

@@ -7,6 +7,7 @@ import { User, Mail, Calendar, MapPin, Briefcase, Settings, Star, Edit3 } from '
 import SkillsManager from '../components/SkillsManager';
 import AvailabilityManager from '../components/AvailabilityManager';
 import ProfileDetailsManager from '../components/ProfileDetailsManager';
+import AIInsightsCard from '../components/AIInsightsCard';
 
 export default function EmployeeProfile() {
   const { userProfile } = useAuth();
@@ -183,6 +184,9 @@ export default function EmployeeProfile() {
                     isEditable={false}
                   />
                 </div>
+                
+                {/* AI Insights Section */}
+                <AIInsightsCard />
               </div>
             )}
 
