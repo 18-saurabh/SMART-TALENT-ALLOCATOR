@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogOut, Users, Sparkles, Lightbulb } from 'lucide-react';
+import { Menu, X, User, LogOut, Users, Sparkles, Lightbulb, Calendar } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
@@ -48,6 +48,14 @@ export default function Navbar() {
       description: userProfile?.role === 'manager'
         ? 'Team insights and skill gaps'
         : 'Career growth and skill recommendations'
+    },
+    {
+      name: 'Planner',
+      href: '/planner',
+      icon: Calendar,
+      description: userProfile?.role === 'manager'
+        ? 'Create and manage project plans'
+        : 'View and contribute to project plans'
     }
   ] : [];
 

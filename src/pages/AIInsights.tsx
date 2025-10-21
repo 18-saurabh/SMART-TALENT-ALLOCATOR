@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useEmployees } from '../hooks/useEmployees';
 import { useProjects } from '../hooks/useProjects';
-import { 
-  Lightbulb, 
-  TrendingUp, 
-  Star, 
-  Users, 
-  BookOpen, 
-  DollarSign, 
-  Target, 
+import {
+  Lightbulb,
+  TrendingUp,
+  Star,
+  Users,
+  BookOpen,
+  IndianRupee,
+  Target,
   Award,
   RefreshCw,
   Clock,
@@ -152,13 +152,13 @@ export default function AIInsights() {
       skillRecommendations: [
         {
           name: 'React Advanced Patterns',
-          reason: 'High demand in your current projects and 25% salary increase potential',
+          reason: 'High demand in your current projects and ₹2-3 LPA salary increase potential',
           priority: 'high',
           estimatedTime: '4-6 weeks'
         },
         {
           name: 'Cloud Architecture (AWS)',
-          reason: 'Critical for senior roles, 30% average salary boost',
+          reason: 'Critical for senior roles, ₹3-4 LPA average salary boost',
           priority: 'high',
           estimatedTime: '8-10 weeks'
         },
@@ -173,21 +173,21 @@ export default function AIInsights() {
         {
           skill: 'AI/ML Integration',
           roles: ['Senior Developer', 'Tech Lead', 'AI Engineer'],
-          payBoost: '35-50%',
+          payBoost: '₹4-6 LPA',
           demandScore: 95,
           marketTrend: 'rising'
         },
         {
           skill: 'Kubernetes',
           roles: ['DevOps Engineer', 'Cloud Architect', 'Senior Developer'],
-          payBoost: '25-40%',
+          payBoost: '₹3-5 LPA',
           demandScore: 88,
           marketTrend: 'rising'
         },
         {
           skill: 'TypeScript',
           roles: ['Frontend Developer', 'Full Stack Developer'],
-          payBoost: '15-25%',
+          payBoost: '₹2-3 LPA',
           demandScore: 82,
           marketTrend: 'stable'
         }
@@ -218,21 +218,21 @@ export default function AIInsights() {
           provider: 'Frontend Masters',
           duration: '6 hours',
           rating: 4.8,
-          price: '$39/month'
+          price: '₹3,200/month'
         },
         {
           title: 'AWS Solutions Architect',
           provider: 'A Cloud Guru',
           duration: '20 hours',
           rating: 4.7,
-          price: '$49/month'
+          price: '₹4,000/month'
         },
         {
           title: 'Leadership for Tech Professionals',
           provider: 'LinkedIn Learning',
           duration: '4 hours',
           rating: 4.6,
-          price: '$29.99/month'
+          price: '₹2,500/month'
         }
       ],
       careerGrowthScore: 78,
@@ -280,21 +280,21 @@ export default function AIInsights() {
         {
           skill: 'AI/ML Integration',
           roles: ['Senior Developer', 'Tech Lead', 'AI Specialist'],
-          payBoost: '40-60%',
+          payBoost: '₹5-7 LPA',
           demandScore: 96,
           marketTrend: 'rising'
         },
         {
           skill: 'Cloud Native Development',
           roles: ['Cloud Architect', 'DevOps Engineer', 'Senior Developer'],
-          payBoost: '30-45%',
+          payBoost: '₹4-6 LPA',
           demandScore: 89,
           marketTrend: 'rising'
         },
         {
           skill: 'Cybersecurity',
           roles: ['Security Engineer', 'DevSecOps', 'Architect'],
-          payBoost: '35-50%',
+          payBoost: '₹4-6 LPA',
           demandScore: 87,
           marketTrend: 'rising'
         }
@@ -303,7 +303,7 @@ export default function AIInsights() {
         id: emp.uid,
         name: emp.name,
         recommendation: ['Cloud Architecture certification', 'AI/ML fundamentals', 'Advanced React patterns'][index] || 'Full-stack development',
-        payBoost: ['30-40%', '35-50%', '20-30%'][index] || '25-35%',
+        payBoost: ['₹3-4 LPA', '₹4-6 LPA', '₹2-3 LPA'][index] || '₹3-4 LPA',
         currentSkills: emp.skills.map(s => s.name),
         targetSkills: [
           ['AWS', 'Azure', 'Kubernetes'],
@@ -458,7 +458,7 @@ export default function AIInsights() {
                     {[
                       { id: 'overview', label: 'Overview', icon: BarChart3 },
                       { id: 'skills', label: 'Skills', icon: Star },
-                      { id: 'career', label: 'Career Growth', icon: TrendingUp },
+                      ...(userProfile.role === 'employee' ? [{ id: 'career', label: 'Career Growth', icon: TrendingUp }] : []),
                       { id: 'actions', label: 'Recommended Actions', icon: Target }
                     ].map((tab) => {
                       const Icon = tab.icon;
@@ -623,7 +623,7 @@ export default function AIInsights() {
                               Roles: {trend.roles.join(', ')}
                             </p>
                             <div className="flex items-center space-x-2">
-                              <DollarSign className="h-4 w-4 text-green-600" />
+                              <IndianRupee className="h-4 w-4 text-green-600" />
                               <span className="text-sm font-medium text-green-700">
                                 Pay boost: {trend.payBoost}
                               </span>

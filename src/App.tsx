@@ -11,6 +11,7 @@ import EmployeeDashboard from './pages/EmployeeDashboard';
 import ManagerDashboard from './pages/ManagerDashboard';
 import EmployeeProfile from './pages/EmployeeProfile';
 import AIInsights from './pages/AIInsights';
+import Planner from './pages/Planner';
 
 function AppContent() {
   const { currentUser, userProfile } = useAuth();
@@ -39,15 +40,23 @@ function AppContent() {
               <Navigate to={userProfile.role === 'manager' ? '/manager-dashboard' : '/employee-dashboard'} replace />
             ) : <SignUp />} 
           />
-          <Route 
-            path="/ai-insights" 
+          <Route
+            path="/ai-insights"
             element={
               <ProtectedRoute>
                 <AIInsights />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
+          <Route
+            path="/planner"
+            element={
+              <ProtectedRoute>
+                <Planner />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/employee-dashboard" 
             element={
               <ProtectedRoute requiredRole="employee">
