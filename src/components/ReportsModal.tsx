@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, BarChart3, TrendingUp, Users, IndianRupee, Calendar, Filter, Download, PieChart, Activity } from 'lucide-react';
+import { X, BarChart3, TrendingUp, Users, IndianRupee, Calendar, Filter, Download, PieChart, Activity, FileSpreadsheet, FileText } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
 import { useEmployees } from '../hooks/useEmployees';
 
@@ -17,18 +17,32 @@ export default function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
   });
   const [selectedProject, setSelectedProject] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   // Initialize date range to current month
   useEffect(() => {
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    
+
     setDateRange({
       startDate: firstDay.toISOString().split('T')[0],
       endDate: lastDay.toISOString().split('T')[0]
     });
   }, []);
+
+  // Close export menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (showExportMenu && !target.closest('.export-menu-container')) {
+        setShowExportMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showExportMenu]);
 
   // Filter projects based on selected filters
   const filteredProjects = projects.filter(project => {
@@ -83,32 +97,176 @@ export default function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
     { status: 'On Hold', count: filteredProjects.filter(p => p.status === 'on-hold').length, color: 'bg-red-500' }
   ];
 
-  const handleExportReport = () => {
-    const reportData = {
-      generatedAt: new Date().toISOString(),
-      dateRange,
-      filters: { selectedProject, selectedEmployee },
-      summary: {
-        totalProjects,
-        completedProjects,
-        inProgressProjects,
-        overdueProjects,
-        totalBudget,
-        averageProgress
-      },
-      employeeMetrics,
-      projects: filteredProjects
-    };
+  const handleExportCSV = () => {
+    const csvRows = [];
 
-    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+    // Add header
+    csvRows.push(['Project Report - Generated on ' + new Date().toLocaleDateString()]);
+    csvRows.push([]);
+
+    // Add summary section
+    csvRows.push(['Summary']);
+    csvRows.push(['Total Projects', totalProjects]);
+    csvRows.push(['Completed Projects', completedProjects]);
+    csvRows.push(['In Progress Projects', inProgressProjects]);
+    csvRows.push(['Overdue Projects', overdueProjects]);
+    csvRows.push(['Total Budget', '₹' + totalBudget.toLocaleString('en-IN')]);
+    csvRows.push(['Average Progress', averageProgress + '%']);
+    csvRows.push([]);
+
+    // Add employee metrics section
+    if (employeeMetrics.length > 0) {
+      csvRows.push(['Employee Performance']);
+      csvRows.push(['Name', 'Projects', 'Completed', 'Avg Progress', 'Efficiency']);
+      employeeMetrics.forEach(metric => {
+        csvRows.push([
+          metric.employee.name,
+          metric.projectCount,
+          metric.completedCount,
+          metric.avgProgress + '%',
+          metric.efficiency + '%'
+        ]);
+      });
+      csvRows.push([]);
+    }
+
+    // Add project details section
+    csvRows.push(['Project Details']);
+    csvRows.push(['Project Name', 'Status', 'Priority', 'Progress', 'Budget', 'Team Size', 'Deadline', 'Created At']);
+    filteredProjects.forEach(project => {
+      csvRows.push([
+        project.title,
+        project.status,
+        project.priority,
+        project.progress + '%',
+        project.budget ? '₹' + project.budget.toLocaleString('en-IN') : 'N/A',
+        project.assignedEmployees.length,
+        project.deadline.toLocaleDateString(),
+        project.createdAt.toLocaleDateString()
+      ]);
+    });
+
+    // Convert to CSV string
+    const csvContent = csvRows.map(row =>
+      row.map(cell =>
+        typeof cell === 'string' && (cell.includes(',') || cell.includes('"'))
+          ? `"${cell.replace(/"/g, '""')}"`
+          : cell
+      ).join(',')
+    ).join('\n');
+
+    // Download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `project-report-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `project-report-${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    setShowExportMenu(false);
+  };
+
+  const handleExportExcel = () => {
+    // Create Excel-compatible HTML table
+    let htmlContent = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          table { border-collapse: collapse; width: 100%; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #4B6AFF; color: white; font-weight: bold; }
+          .summary-header { background-color: #E8EDFF; font-weight: bold; padding: 10px; }
+          .section-title { background-color: #F3F4F6; font-weight: bold; padding: 10px; margin-top: 20px; }
+        </style>
+      </head>
+      <body>
+        <h1>Project Report</h1>
+        <p>Generated on: ${new Date().toLocaleDateString()}</p>
+
+        <div class="section-title">Summary</div>
+        <table>
+          <tr><th>Metric</th><th>Value</th></tr>
+          <tr><td>Total Projects</td><td>${totalProjects}</td></tr>
+          <tr><td>Completed Projects</td><td>${completedProjects}</td></tr>
+          <tr><td>In Progress Projects</td><td>${inProgressProjects}</td></tr>
+          <tr><td>Overdue Projects</td><td>${overdueProjects}</td></tr>
+          <tr><td>Total Budget</td><td>₹${totalBudget.toLocaleString('en-IN')}</td></tr>
+          <tr><td>Average Progress</td><td>${averageProgress}%</td></tr>
+        </table>
+
+        ${employeeMetrics.length > 0 ? `
+        <div class="section-title" style="margin-top: 30px;">Employee Performance</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Projects</th>
+              <th>Completed</th>
+              <th>Avg Progress</th>
+              <th>Efficiency</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${employeeMetrics.map(metric => `
+              <tr>
+                <td>${metric.employee.name}</td>
+                <td>${metric.projectCount}</td>
+                <td>${metric.completedCount}</td>
+                <td>${metric.avgProgress}%</td>
+                <td>${metric.efficiency}%</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        ` : ''}
+
+        <div class="section-title" style="margin-top: 30px;">Project Details</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Project Name</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Progress</th>
+              <th>Budget</th>
+              <th>Team Size</th>
+              <th>Deadline</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredProjects.map(project => `
+              <tr>
+                <td>${project.title}</td>
+                <td>${project.status}</td>
+                <td>${project.priority}</td>
+                <td>${project.progress}%</td>
+                <td>${project.budget ? '₹' + project.budget.toLocaleString('en-IN') : 'N/A'}</td>
+                <td>${project.assignedEmployees.length}</td>
+                <td>${project.deadline.toLocaleDateString()}</td>
+                <td>${project.createdAt.toLocaleDateString()}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    // Download as Excel file
+    const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `project-report-${new Date().toISOString().split('T')[0]}.xls`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setShowExportMenu(false);
   };
 
   if (!isOpen) return null;
@@ -122,13 +280,33 @@ export default function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
             <h2 className="text-2xl font-bold text-gray-900">Project Reports</h2>
           </div>
           <div className="flex items-center space-x-3">
-            <button
-              onClick={handleExportReport}
-              className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
-            >
-              <Download className="h-4 w-4" />
-              <span>Export</span>
-            </button>
+            <div className="relative export-menu-container">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+              >
+                <Download className="h-4 w-4" />
+                <span>Export</span>
+              </button>
+              {showExportMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                  <button
+                    onClick={handleExportExcel}
+                    className="w-full flex items-center space-x-2 px-4 py-3 hover:bg-gray-50 transition-colors duration-200 text-left rounded-t-lg"
+                  >
+                    <FileSpreadsheet className="h-4 w-4 text-green-600" />
+                    <span className="text-sm text-gray-700">Export as Excel</span>
+                  </button>
+                  <button
+                    onClick={handleExportCSV}
+                    className="w-full flex items-center space-x-2 px-4 py-3 hover:bg-gray-50 transition-colors duration-200 text-left border-t border-gray-100 rounded-b-lg"
+                  >
+                    <FileText className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm text-gray-700">Export as CSV</span>
+                  </button>
+                </div>
+              )}
+            </div>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"

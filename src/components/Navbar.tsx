@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Users, Sparkles, Lightbulb, Calendar } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -9,6 +9,7 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const { currentUser, userProfile, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,11 +84,14 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
             {navigation.map((item) => {
               const Icon = item.icon;
+              const isActive = location.pathname === item.href;
               return (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="navbar-link flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-[#E8EDFF] transition-all duration-300 group"
+                  className={`navbar-link flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 group ${
+                    isActive ? 'bg-[#E8EDFF] text-[#4B6AFF] font-medium' : 'hover:bg-[#E8EDFF]'
+                  }`}
                   title={item.description}
                 >
                   <Icon className="h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -145,12 +149,15 @@ export default function Navbar() {
             <div className="px-2 pt-2 pb-3 space-y-2 border-t border-[rgba(75,106,255,0.1)]">
               {navigation.map((item) => {
                 const Icon = item.icon;
+                const isActive = location.pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     to={item.href}
                     onClick={() => setIsOpen(false)}
-                    className="navbar-link flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-[#E8EDFF] transition-all duration-300"
+                    className={`navbar-link flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-300 ${
+                      isActive ? 'bg-[#E8EDFF] text-[#4B6AFF] font-medium' : 'hover:bg-[#E8EDFF]'
+                    }`}
                   >
                     <Icon className="h-5 w-5" />
                     <span>{item.name}</span>
