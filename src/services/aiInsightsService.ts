@@ -343,12 +343,21 @@ Requirements:
 
   private parseEmployeeInsights(aiResponse: string, employee: Employee): EmployeeInsightsResponse {
     try {
-      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      // First try to find JSON within markdown code blocks
+      let jsonMatch = aiResponse.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+      
+      // If no code block found, try to find JSON in the response
+      if (!jsonMatch) {
+        jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      }
+      
       if (!jsonMatch) {
         throw new Error('No JSON found in response');
       }
 
-      const parsed = JSON.parse(jsonMatch[0]);
+      // Use the captured group if it exists (from code block), otherwise use the full match
+      const jsonString = jsonMatch[1] || jsonMatch[0];
+      const parsed = JSON.parse(jsonString);
       
       return {
         summary: parsed.summary || `${employee.name} is performing well with opportunities for growth`,
@@ -368,12 +377,21 @@ Requirements:
 
   private parseManagerInsights(aiResponse: string, employees: Employee[]): ManagerInsightsResponse {
     try {
-      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      // First try to find JSON within markdown code blocks
+      let jsonMatch = aiResponse.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+      
+      // If no code block found, try to find JSON in the response
+      if (!jsonMatch) {
+        jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      }
+      
       if (!jsonMatch) {
         throw new Error('No JSON found in response');
       }
 
-      const parsed = JSON.parse(jsonMatch[0]);
+      // Use the captured group if it exists (from code block), otherwise use the full match
+      const jsonString = jsonMatch[1] || jsonMatch[0];
+      const parsed = JSON.parse(jsonString);
       
       return {
         summary: parsed.summary || 'Team performance is stable with some areas for attention',

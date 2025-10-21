@@ -42,7 +42,7 @@ export default function EmployeeDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
@@ -52,7 +52,7 @@ export default function EmployeeDashboard() {
       
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8 relative z-10">
+        <div className="mb-6 sm:mb-8 relative z-10">
           <div className="flex items-center space-x-2 mb-4">
             <Sparkles className="h-6 w-6 text-blue-600 animate-float-rotate" />
             <span className="text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full">
@@ -68,7 +68,7 @@ export default function EmployeeDashboard() {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 animate-float-up">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 animate-float-up">
             Welcome back, <span className="gradient-text">{userProfile?.name || 'Employee'}</span>!
           </h1>
               <p className="text-gray-600 mt-2 animate-float-down">
@@ -78,9 +78,9 @@ export default function EmployeeDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 relative z-10">
-          {/* Main Content - Left Side */}
-          <div className="lg:col-span-3 space-y-8">
+        <div className="space-y-4 sm:space-y-6 md:space-y-8 relative z-10">
+          {/* Main Content - Full Width */}
+          <div className="space-y-4 sm:space-y-6 md:space-y-8">
             {/* 1. My Profile */}
             <div className="animate-float-up">
               <ProfileCard />
@@ -100,87 +100,71 @@ export default function EmployeeDashboard() {
             <div className="animate-float-up" style={{ animationDelay: '0.2s' }}>
               <ProjectsGrid key={`projects-${refreshKey}`} />
             </div>
-            
+
             {/* 4. Recent Activity */}
             <div className="animate-float-down" style={{ animationDelay: '0.3s' }}>
               <ActivityFeed key={`activity-${refreshKey}`} />
             </div>
-          </div>
 
-          {/* Quick Actions Sidebar - Right Side */}
-          <div className="lg:col-span-1">
-            <div className="modern-card p-6 sticky top-8 animate-float-up" style={{ animationDelay: '0.4s' }}>
-              <div className="flex items-center space-x-2 mb-6">
-                <TrendingUp className="h-5 w-5 text-blue-600" />
-                <h3 className="font-semibold text-gray-900">Quick Actions</h3>
-              </div>
-              <div className="space-y-3">
-                <button 
-                  onClick={() => setIsCalendarModalOpen(true)}
-                  className="w-full text-left p-4 hover:bg-blue-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-gray-200 hover:border-blue-300 hover:shadow-md group"
-                >
-                  <Calendar className="h-5 w-5 text-blue-600 group-hover:animate-pulse" />
-                  <div>
-                    <span className="text-gray-900 font-medium block">View Calendar</span>
-                    <span className="text-gray-500 text-sm">Check deadlines</span>
-                  </div>
-                </button>
-                
-                <Link
-                  to="/employee-profile?tab=edit"
-                  className="w-full text-left p-4 hover:bg-purple-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-gray-200 hover:border-purple-300 hover:shadow-md group"
-                >
-                  <UserCog className="h-5 w-5 text-purple-600 group-hover:animate-pulse" />
-                  <div>
-                    <span className="text-gray-900 font-medium block">Profile Settings</span>
-                    <span className="text-gray-500 text-sm">Edit profile & skills</span>
-                  </div>
-                </Link>
-                
-                <Link
-                  to="/employee-profile?tab=profile"
-                  className="w-full text-left p-4 hover:bg-gray-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-gray-200 hover:border-gray-300 hover:shadow-md group"
-                >
-                  <Settings className="h-5 w-5 text-gray-600 group-hover:animate-pulse" />
-                  <div>
-                    <span className="text-gray-900 font-medium block">View Profile</span>
-                    <span className="text-gray-500 text-sm">Profile overview</span>
-                  </div>
-                </Link>
-              </div>
-              
-              {/* Quick Stats */}
-              <div className="mt-6 pt-6 border-t border-gray-200 animate-float-down">
-                <h4 className="font-medium text-gray-900 mb-4">Quick Stats</h4>
-                <div className="space-y-3">
-                  {overdueProjects > 0 && (
-                    <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
-                      <span className="text-sm text-gray-600">Overdue Projects</span>
-                      <div className="flex items-center space-x-1">
-                        <AlertCircle className="h-4 w-4 text-red-500 animate-pulse" />
-                        <span className="text-sm font-medium text-red-600">{overdueProjects}</span>
-                      </div>
+            {/* Quick Actions - Moved to full width */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-float-up" style={{ animationDelay: '0.4s' }}>
+              <button
+                onClick={() => setIsCalendarModalOpen(true)}
+                className="modern-card p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+              >
+                <Calendar className="h-8 w-8 text-blue-600 mb-3 mx-auto group-hover:animate-pulse" />
+                <h3 className="font-semibold text-gray-900 text-center mb-1">View Calendar</h3>
+                <p className="text-sm text-gray-500 text-center">Check deadlines</p>
+              </button>
+
+              <Link
+                to="/employee-profile?tab=edit"
+                className="modern-card p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+              >
+                <UserCog className="h-8 w-8 text-purple-600 mb-3 mx-auto group-hover:animate-pulse" />
+                <h3 className="font-semibold text-gray-900 text-center mb-1">Profile Settings</h3>
+                <p className="text-sm text-gray-500 text-center">Edit profile & skills</p>
+              </Link>
+
+              <Link
+                to="/employee-profile?tab=profile"
+                className="modern-card p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+              >
+                <Settings className="h-8 w-8 text-gray-600 mb-3 mx-auto group-hover:animate-pulse" />
+                <h3 className="font-semibold text-gray-900 text-center mb-1">View Profile</h3>
+                <p className="text-sm text-gray-500 text-center">Profile overview</p>
+              </Link>
+
+              <button
+                onClick={handleRefresh}
+                className="modern-card p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+              >
+                <RefreshCw className="h-8 w-8 text-green-600 mb-3 mx-auto group-hover:animate-pulse" />
+                <h3 className="font-semibold text-gray-900 text-center mb-1">Refresh Data</h3>
+                <p className="text-sm text-gray-500 text-center">Update dashboard</p>
+              </button>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="modern-card p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Stats</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {overdueProjects > 0 && (
+                  <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
+                    <span className="text-sm text-gray-600">Overdue Projects</span>
+                    <div className="flex items-center space-x-1">
+                      <AlertCircle className="h-4 w-4 text-red-500 animate-pulse" />
+                      <span className="text-sm font-medium text-red-600">{overdueProjects}</span>
                     </div>
-                  )}
-                  <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
-                    <span className="text-sm text-gray-600">Total Projects</span>
-                    <span className="text-sm font-medium text-blue-600">{projects.length}</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg">
-                    <span className="text-sm text-gray-600">Completed Projects</span>
-                    <span className="text-sm font-medium text-green-600">{projects.filter(p => p.status === 'completed').length}</span>
-                  </div>
+                )}
+                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                  <span className="text-sm text-gray-600">Total Projects</span>
+                  <span className="text-sm font-medium text-blue-600">{projects.length}</span>
                 </div>
-                
-                {/* Quick Actions */}
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <button
-                    onClick={handleRefresh}
-                    className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                  >
-                    <RefreshCw className="h-4 w-4" />
-                    <span>Refresh Data</span>
-                  </button>
+                <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                  <span className="text-sm text-gray-600">Completed Projects</span>
+                  <span className="text-sm font-medium text-green-600">{projects.filter(p => p.status === 'completed').length}</span>
                 </div>
               </div>
             </div>

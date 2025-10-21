@@ -10,6 +10,7 @@ import SignUp from './pages/SignUp';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import ManagerDashboard from './pages/ManagerDashboard';
 import EmployeeProfile from './pages/EmployeeProfile';
+import AIInsights from './pages/AIInsights';
 
 function AppContent() {
   const { currentUser, userProfile } = useAuth();
@@ -18,6 +19,7 @@ function AppContent() {
     <Router>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
+        <main className="w-full">
         <Routes>
           <Route path="/" element={
             currentUser && userProfile ? (
@@ -36,6 +38,14 @@ function AppContent() {
             element={currentUser && userProfile ? (
               <Navigate to={userProfile.role === 'manager' ? '/manager-dashboard' : '/employee-dashboard'} replace />
             ) : <SignUp />} 
+          />
+          <Route 
+            path="/ai-insights" 
+            element={
+              <ProtectedRoute>
+                <AIInsights />
+              </ProtectedRoute>
+            } 
           />
           <Route 
             path="/employee-dashboard" 
@@ -69,9 +79,10 @@ function AppContent() {
               ) : (
                 <Navigate to="/" replace />
               )
-            } 
+            }
           />
         </Routes>
+        </main>
       </div>
     </Router>
   );

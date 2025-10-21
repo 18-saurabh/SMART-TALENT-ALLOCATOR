@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { User, Mail, Calendar, MapPin, Briefcase, Edit3 } from 'lucide-react';
+import { User, Mail, Calendar, MapPin, Briefcase, CreditCard as Edit3 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useEmployees } from '../hooks/useEmployees';
 
@@ -11,8 +11,8 @@ export default function ProfileCard() {
   const currentEmployee = getCurrentEmployee();
 
   return (
-    <div className="modern-card p-6 group animate-float-up hover:shadow-2xl">
-      <div className="flex items-center justify-between mb-6">
+    <div className="modern-card p-4 sm:p-6 group animate-float-up hover:shadow-2xl">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div className="flex items-center space-x-2">
           <User className="h-5 w-5 text-blue-600 animate-float-up" />
           <h2 className="text-xl font-semibold text-gray-900">My Profile</h2>
@@ -26,7 +26,7 @@ export default function ProfileCard() {
         </Link>
       </div>
 
-      <div className="flex items-center space-x-4 mb-6">
+      <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6">
         <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center animate-pulse-glow shadow-lg border border-blue-200">
           <span className="text-2xl font-bold text-blue-600">
             {userProfile?.name?.charAt(0).toUpperCase() || 'U'}
@@ -39,7 +39,7 @@ export default function ProfileCard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg hover:shadow-lg transition-all duration-300 group border border-blue-200 hover:border-blue-300">
           <Briefcase className="h-5 w-5 text-blue-500 group-hover:animate-pulse" />
           <div>

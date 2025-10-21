@@ -50,65 +50,58 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
-        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-rotate"></div>
-      </div>
-      
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center animate-float-up">
-          <h2 className="text-3xl font-bold text-gray-900 gradient-text">Welcome back</h2>
-          <p className="mt-2 text-gray-600 animate-float-down">Sign in to your account</p>
+    <div className="min-h-screen bg-[#F9FBFF] flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24">
+      <div className="max-w-md w-full space-y-6 sm:space-y-8">
+        <div className="text-center animate-fadeIn">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Welcome back</h2>
+          <p className="text-lg text-[#4A4A4A]" style={{ fontFamily: 'var(--font-body)' }}>Sign in to your account</p>
         </div>
 
-        <div className="modern-card p-8 animate-float-up">
+        <div className="modern-card p-6 sm:p-8 animate-fadeInUp">
           {error && (
-            <div className="mb-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-700 rounded-lg animate-pulse-glow">
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-[#1A1A1A] mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#A0A0A0]" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white/90"
+                  className="modern-input pl-10"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[#1A1A1A] mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#A0A0A0]" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white/90"
+                  className="modern-input pl-10 pr-12"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#A0A0A0] hover:text-[#4A4A4A]"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -118,7 +111,7 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={loading}
-              className="modern-btn w-full py-3 px-4 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-300 animate-pulse-glow"
+              className="modern-btn w-full py-3 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
@@ -130,14 +123,15 @@ export default function SignIn() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                <span className="px-2 bg-white text-[#4A4A4A]" style={{ fontFamily: 'var(--font-body)' }}>Or continue with</span>
               </div>
             </div>
 
             <button
               onClick={() => handleGoogleSignIn('employee')}
               disabled={loading}
-              className="mt-3 w-full bg-white/90 backdrop-blur-sm border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center space-x-2"
+              className="mt-3 w-full modern-btn-secondary py-3 px-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              style={{ fontFamily: 'var(--font-heading)' }}
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -150,9 +144,9 @@ export default function SignIn() {
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-[#4A4A4A]" style={{ fontFamily: 'var(--font-body)' }}>
               Don't have an account?{' '}
-              <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-semibold animate-pulse">
+              <Link to="/signup" className="text-[#4B6AFF] hover:text-[#5C7CFF] font-semibold" style={{ fontFamily: 'var(--font-heading)' }}>
                 Sign up
               </Link>
             </p>

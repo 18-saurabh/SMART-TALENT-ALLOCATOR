@@ -28,6 +28,8 @@ export default function ManagerDashboard() {
   const [isReportsModalOpen, setIsReportsModalOpen] = useState(false);
   const [isTeamManagementModalOpen, setIsTeamManagementModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
+  const [employeePage, setEmployeePage] = useState(1);
+  const employeesPerPage = 6;
 
   const loading = projectsLoading || employeesLoading;
 
@@ -86,7 +88,7 @@ export default function ManagerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
@@ -96,7 +98,7 @@ export default function ManagerDashboard() {
       
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4 relative z-10">
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Sparkles className="h-6 w-6 text-blue-600 animate-float-rotate" />
@@ -104,7 +106,7 @@ export default function ManagerDashboard() {
                 Manager Dashboard
               </span>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 animate-float-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 animate-float-up">
               Welcome back, <span className="gradient-text">{userProfile?.name || 'Manager'}</span>!
             </h1>
             <p className="text-gray-600 mt-2 animate-float-down">
@@ -123,11 +125,11 @@ export default function ManagerDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8 relative z-10">
           {stats.map((stat, index) => (
-            <div 
-              key={index} 
-              className="modern-card p-6 group animate-float-up"
+            <div
+              key={index}
+              className="modern-card p-4 sm:p-6 group animate-float-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-center justify-between mb-4">
@@ -145,18 +147,18 @@ export default function ManagerDashboard() {
         </div>
 
         {/* Projects Grid */}
-        <div className="mb-8 relative z-10">
+        <div className="mb-6 sm:mb-8 relative z-10">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 animate-float-up">Recent Projects</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Recent Projects</h2>
             {projects.length > 6 && (
-              <button className="text-blue-600 hover:text-blue-700 font-medium animate-float-down">
+              <button className="text-blue-600 hover:text-blue-700 font-medium">
                 View All Projects
               </button>
             )}
           </div>
           
           {projects.length === 0 ? (
-            <div className="modern-card p-12 text-center animate-float-up">
+            <div className="modern-card p-12 text-center">
               <Target className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No Projects Yet</h3>
               <p className="text-gray-600 mb-6">Create your first project to get started with team management.</p>
@@ -169,7 +171,7 @@ export default function ManagerDashboard() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-float-up">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {recentProjects.map((project) => (
                   <ProjectCard
                     key={project.id}
@@ -182,7 +184,7 @@ export default function ManagerDashboard() {
               
               {/* Projects Pending Review */}
               {projectsInReview > 0 && (
-                <div className="mt-8 modern-card p-6 animate-float-down">
+                <div className="mt-8 modern-card p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <CheckCircle className="h-5 w-5 text-purple-600 mr-2 animate-pulse" />
                     Projects Pending Review ({projectsInReview})
@@ -191,7 +193,7 @@ export default function ManagerDashboard() {
                     {projects
                       .filter(p => p.status === 'review')
                       .map((project) => (
-                        <div key={project.id} className="border border-purple-200 rounded-xl p-4 bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-lg transition-all duration-300 backdrop-blur-sm">
+                        <div key={project.id} className="border border-purple-200 rounded-xl p-4 bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-lg transition-all duration-300 backdrop-blur-sm hover:-translate-y-1">
                           <h4 className="font-medium text-gray-900 mb-2">{project.title}</h4>
                           <p className="text-sm text-gray-600 mb-3">
                             Submitted by: {project.assignedEmployeeNames.join(', ')}
@@ -228,16 +230,15 @@ export default function ManagerDashboard() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
-          {/* Team Overview */}
-          <div className="lg:col-span-2">
+        {/* Team Overview Section - Full Width */}
+        <div className="relative z-10">
             {/* AI Team Insights */}
-            <div className="mb-6 animate-float-up">
+            <div className="mb-6">
               <TeamAIInsightsCard />
             </div>
             
             {/* Employee Search and Filter */}
-            <div className="mb-6 animate-float-up">
+            <div className="mb-6">
               <EmployeeSearch
                 employees={allEmployees}
                 onFilter={filterEmployees}
@@ -247,9 +248,9 @@ export default function ManagerDashboard() {
             </div>
 
             {/* Team Members */}
-            <div className="modern-card p-6 animate-float-down">
+            <div className="modern-card p-4 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
                   Team Overview
                   {employees.length !== allEmployees.length && (
                     <span className="text-sm font-normal text-gray-500 ml-2">
@@ -267,8 +268,9 @@ export default function ManagerDashboard() {
                   <p className="text-sm text-gray-400 mt-1">Employees will appear here once they sign up</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {employees.map((employee) => {
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {employees.slice((employeePage - 1) * employeesPerPage, employeePage * employeesPerPage).map((employee) => {
                     const employeeProjects = projects.filter(p => 
                       p.assignedEmployees.includes(employee.uid)
                     );
@@ -286,9 +288,9 @@ export default function ManagerDashboard() {
                     };
                     
                     return (
-                      <div 
-                        key={employee.uid} 
-                        className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90"
+                      <div
+                        key={employee.uid}
+                        className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 hover:-translate-y-1"
                         onClick={() => setSelectedEmployee(selectedEmployee === employee.uid ? null : employee.uid)}
                       >
                         <div className="flex items-center space-x-3 mb-3">
@@ -348,7 +350,7 @@ export default function ManagerDashboard() {
                         
                         {/* Expanded Details */}
                         {selectedEmployee === employee.uid && (
-                          <div className="mt-4 pt-4 border-t border-gray-200 space-y-4 animate-float-down">
+                          <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                             <SkillsManager
                               skills={employee.skills}
                               onAddSkill={async () => {}}
@@ -365,45 +367,75 @@ export default function ManagerDashboard() {
                           </div>
                         )}
                       </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Pagination */}
+                  {employees.length > employeesPerPage && (
+                    <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          Showing <span className="font-medium">{((employeePage - 1) * employeesPerPage) + 1}</span> to{' '}
+                          <span className="font-medium">{Math.min(employeePage * employeesPerPage, employees.length)}</span> of{' '}
+                          <span className="font-medium">{employees.length}</span> employees
+                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => setEmployeePage(prev => Math.max(1, prev - 1))}
+                          disabled={employeePage === 1}
+                          className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                        >
+                          Previous
+                        </button>
+                        <button
+                          onClick={() => setEmployeePage(prev => Math.min(Math.ceil(employees.length / employeesPerPage), prev + 1))}
+                          disabled={employeePage === Math.ceil(employees.length / employeesPerPage)}
+                          className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
-          </div>
+        </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <div className="modern-card p-6 animate-float-up sticky top-8">
-              <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <button 
+        {/* Quick Actions & Deadlines - Full Width at Bottom */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10 mt-6 sm:mt-8">
+          {/* Quick Actions */}
+          <div className="md:col-span-2 lg:col-span-3 modern-card p-4 sm:p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="w-full text-left p-3 hover:bg-blue-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-transparent hover:border-blue-200 hover:shadow-md group"
+                  className="p-4 hover:bg-blue-50 rounded-lg transition-all duration-300 flex flex-col items-center justify-center space-y-2 border border-transparent hover:border-blue-200 hover:shadow-md group hover:-translate-y-1"
                 >
-                  <Plus className="h-5 w-5 text-blue-600 group-hover:animate-pulse" />
-                  <span className="text-gray-700">Create Project</span>
+                  <Plus className="h-8 w-8 text-blue-600 group-hover:animate-pulse" />
+                  <span className="text-gray-700 font-medium">Create Project</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setIsReportsModalOpen(true)}
-                  className="w-full text-left p-3 hover:bg-purple-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-transparent hover:border-purple-200 hover:shadow-md group"
+                  className="p-4 hover:bg-purple-50 rounded-lg transition-all duration-300 flex flex-col items-center justify-center space-y-2 border border-transparent hover:border-purple-200 hover:shadow-md group hover:-translate-y-1"
                 >
-                  <BarChart3 className="h-5 w-5 text-purple-600 group-hover:animate-pulse" />
-                  <span className="text-gray-700">View Reports</span>
+                  <BarChart3 className="h-8 w-8 text-purple-600 group-hover:animate-pulse" />
+                  <span className="text-gray-700 font-medium">View Reports</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setIsTeamManagementModalOpen(true)}
-                  className="w-full text-left p-3 hover:bg-green-50 rounded-lg transition-all duration-300 flex items-center space-x-3 border border-transparent hover:border-green-200 hover:shadow-md group"
+                  className="p-4 hover:bg-green-50 rounded-lg transition-all duration-300 flex flex-col items-center justify-center space-y-2 border border-transparent hover:border-green-200 hover:shadow-md group hover:-translate-y-1"
                 >
-                  <Users className="h-5 w-5 text-green-600 group-hover:animate-pulse" />
-                  <span className="text-gray-700">Manage Team</span>
+                  <Users className="h-8 w-8 text-green-600 group-hover:animate-pulse" />
+                  <span className="text-gray-700 font-medium">Manage Team</span>
                 </button>
               </div>
             </div>
 
-            {/* Upcoming Deadlines */}
-            <div className="modern-card p-6 animate-float-down">
+          {/* Upcoming Deadlines */}
+          <div className="modern-card p-4 sm:p-6">
               <h3 className="font-semibold text-gray-900 mb-4">Upcoming Deadlines</h3>
               {upcomingDeadlines.length === 0 ? (
                 <p className="text-gray-500 text-sm">No upcoming deadlines</p>
@@ -464,6 +496,5 @@ export default function ManagerDashboard() {
           onClose={() => setIsTeamManagementModalOpen(false)}
         />
       </div>
-    </div>
   );
 }

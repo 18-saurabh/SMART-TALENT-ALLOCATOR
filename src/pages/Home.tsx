@@ -5,61 +5,55 @@ import { ArrowRight, Users, Target, BarChart3, Zap, Sparkles, Brain, Rocket } fr
 export default function Home() {
   const features = [
     {
-      icon: <Users className="h-8 w-8 text-blue-600 animate-float-up" />,
+      icon: <Users className="h-8 w-8 text-[#4B6AFF]" />,
       title: "Smart Team Management",
       description: "Intelligently allocate talent based on skills, availability, and project requirements."
     },
     {
-      icon: <Target className="h-8 w-8 text-purple-600 animate-float-down" />,
+      icon: <Target className="h-8 w-8 text-[#4B6AFF]" />,
       title: "Project Matching",
       description: "Match the right people to the right projects with AI-powered recommendations."
     },
     {
-      icon: <BarChart3 className="h-8 w-8 text-cyan-600 animate-float-up" />,
+      icon: <BarChart3 className="h-8 w-8 text-[#4B6AFF]" />,
       title: "Performance Analytics",
       description: "Track team performance and optimize resource allocation with detailed insights."
     },
     {
-      icon: <Zap className="h-8 w-8 text-yellow-600 animate-float-rotate" />,
+      icon: <Zap className="h-8 w-8 text-[#FF6F61]" />,
       title: "Real-time Insights",
       description: "Get instant visibility into team capacity, utilization, and project status."
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float-up"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float-down"></div>
-        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float-rotate"></div>
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 z-10">
+    <div className="min-h-screen bg-[#F9FBFF] pt-16">
+      <section className="hero-gradient py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="flex justify-center mb-6">
-            <div className="flex items-center space-x-2 bg-over-spline px-6 py-3 rounded-full">
-              <Brain className="h-5 w-5 text-blue-600 animate-pulse-glow" />
-              <span className="text-sm font-medium text-gray-700">AI-Powered Talent Management</span>
-              <Sparkles className="h-4 w-4 text-purple-600 animate-float-rotate" />
+          <div className="flex justify-center mb-6 animate-fadeIn">
+            <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+              <Brain className="h-5 w-5 text-white animate-pulse" />
+              <span className="text-sm font-medium text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                AI-Powered Talent Management
+              </span>
+              <Sparkles className="h-4 w-4 text-white animate-pulse" />
             </div>
           </div>
-          
-          <h1 className="text-4xl sm:text-6xl font-bold mb-6">
-            <span className="text-gray-900">Smart Talent</span>
-            <span className="gradient-text block animate-gradient">Allocation</span>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-white animate-fadeInUp leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+            Smart Talent<br />
+            <span className="text-white">Allocation</span>
           </h1>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Optimize your team's potential with <span className="font-semibold text-blue-600">intelligent talent allocation</span>. 
+
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed animate-fadeInUp px-4" style={{ fontFamily: 'var(--font-body)' }}>
+            Optimize your team's potential with intelligent talent allocation.
             Match skills to opportunities, maximize productivity, and drive success with AI-powered insights.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fadeInUp">
             <Link
               to="/signup"
-              className="modern-btn animate-pulse-glow flex items-center space-x-2 shadow-lg"
+              className="modern-btn flex items-center space-x-2 text-base"
             >
               <Rocket className="h-5 w-5" />
               <span>Get Started</span>
@@ -67,7 +61,8 @@ export default function Home() {
             </Link>
             <Link
               to="/about"
-              className="bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:bg-white hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+              className="bg-white/10 backdrop-blur-sm border border-white/30 text-white px-8 py-3 rounded-lg font-medium hover:bg-white/20 transform hover:scale-105 transition-all duration-300"
+              style={{ fontFamily: 'var(--font-heading)' }}
             >
               Learn More
             </Link>
@@ -75,36 +70,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full mb-6">
-              <Sparkles className="h-4 w-4 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">Why Choose Us</span>
+          <div className="text-center mb-10 sm:mb-12 md:mb-16 animate-fadeIn">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full mb-6" style={{ background: 'var(--gradient-card)' }}>
+              <Sparkles className="h-4 w-4 text-[#4B6AFF]" />
+              <span className="text-sm font-medium text-[#4A4A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+                Why Choose Us
+              </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 animate-float-up">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 px-4" style={{ fontFamily: 'var(--font-heading)' }}>
               Why Choose Smart Talent Allocator?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-[#4A4A4A] max-w-2xl mx-auto px-4" style={{ fontFamily: 'var(--font-body)' }}>
               Revolutionize how you manage and allocate talent in your organization
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {features.map((feature, index) => (
-              <div 
+              <div
                 key={index}
-                className="modern-card p-8 group"
+                className="modern-card group animate-fadeInUp"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-xl font-semibold text-[#1A1A1A] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-[#4A4A4A] leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
                   {feature.description}
                 </p>
               </div>
@@ -113,32 +109,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 animate-gradient"></div>
-        <div className="absolute inset-0 bg-black/20"></div>
-        
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="relative z-10">
-            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-              <Rocket className="h-4 w-4 text-white animate-float-up" />
-              <span className="text-sm font-medium text-white">Ready to Transform?</span>
-            </div>
-            
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 animate-float-up">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 hero-gradient"></div>
+
+        <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
+          <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6 animate-fadeIn">
+            <Rocket className="h-4 w-4 text-white" />
+            <span className="text-sm font-medium text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+              Ready to Transform?
+            </span>
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 animate-fadeInUp px-4" style={{ fontFamily: 'var(--font-heading)' }}>
             Ready to Transform Your Team?
           </h2>
-          <p className="text-xl text-white/90 mb-8 animate-float-down">
-            Join <span className="font-bold">thousands of organizations</span> already using Smart Talent Allocator
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10 animate-fadeInUp px-4" style={{ fontFamily: 'var(--font-body)' }}>
+            Join thousands of organizations already using Smart Talent Allocator
           </p>
           <Link
             to="/signup"
-            className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 inline-flex items-center space-x-2 shadow-2xl animate-pulse-glow"
+            className="bg-white text-[#4B6AFF] px-8 py-4 rounded-lg font-semibold hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 inline-flex items-center space-x-2 shadow-xl animate-fadeInUp"
+            style={{ fontFamily: 'var(--font-heading)' }}
           >
             <span>Start Your Free Trial</span>
             <ArrowRight className="h-5 w-5" />
           </Link>
-          </div>
         </div>
       </section>
     </div>
