@@ -275,17 +275,17 @@ Keep suggestions concise, practical, and formatted with clear bold headings.
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center space-x-2 mb-4">
-            <Calendar className="h-6 w-6 text-blue-600 animate-float-rotate" />
+            <Calendar className="h-6 w-6 text-blue-600" />
             <span className="text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full">
               Project Planning
             </span>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 animate-float-up">
+              <h1 className="text-3xl font-bold text-gray-900">
                 <span className="gradient-text">Project Planner</span>
               </h1>
-              <p className="text-gray-600 mt-2 animate-float-down">
+              <p className="text-gray-600 mt-2">
                 {userProfile?.role === 'manager'
                   ? 'Create and manage project plans with AI-powered suggestions'
                   : 'View and contribute to project plans'
@@ -309,7 +309,7 @@ Keep suggestions concise, practical, and formatted with clear bold headings.
           <div className="text-center">
             {aiLoading ? (
               <div className="flex flex-col items-center">
-                <RefreshCw className="h-12 w-12 text-blue-600 animate-spin mb-4" />
+                <RefreshCw className="h-12 w-12 text-blue-600 mb-4" />
                 <p className="text-lg font-semibold text-gray-900">Generating AI Suggestions...</p>
                 <p className="text-sm text-gray-600 mt-2">Please wait while we analyze the project</p>
               </div>
@@ -335,7 +335,7 @@ Keep suggestions concise, practical, and formatted with clear bold headings.
             ) : (
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
-                  <Brain className="h-16 w-16 text-blue-600 animate-float-up" />
+                  <Brain className="h-16 w-16 text-blue-600" />
                   <ArrowDown className="h-8 w-8 text-blue-400 absolute -bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 mt-4">Drop Project Here for AI Suggestions</h3>
@@ -358,13 +358,13 @@ Keep suggestions concise, practical, and formatted with clear bold headings.
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 text-red-700 animate-float-down">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 text-red-700">
             <AlertCircle className="h-5 w-5" />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="mb-6 modern-card p-6 animate-float-up">
+        <div className="mb-6 modern-card p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <Target className="h-5 w-5 mr-2 text-blue-600" />

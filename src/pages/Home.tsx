@@ -32,11 +32,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex justify-center mb-6 animate-fadeIn">
             <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-              <Brain className="h-5 w-5 text-white animate-pulse" />
+              <Brain className="h-5 w-5 text-white" />
               <span className="text-sm font-medium text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                 AI-Powered Talent Management
               </span>
-              <Sparkles className="h-4 w-4 text-white animate-pulse" />
+              <Sparkles className="h-4 w-4 text-white" />
             </div>
           </div>
 

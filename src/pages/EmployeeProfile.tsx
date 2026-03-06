@@ -34,7 +34,7 @@ export default function EmployeeProfile() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading profile...</p>
         </div>
       </div>
@@ -57,29 +57,29 @@ export default function EmployeeProfile() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
-        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-rotate"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
       </div>
       
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8 relative z-10">
-          <h1 className="text-3xl font-bold text-gray-900 gradient-text animate-float-up">My Profile</h1>
-          <p className="text-gray-600 mt-2 animate-float-down">
+          <h1 className="text-3xl font-bold text-gray-900 gradient-text">My Profile</h1>
+          <p className="text-gray-600 mt-2">
             Manage your profile, skills and availability to help with better project allocation
           </p>
         </div>
 
         {/* Tab Navigation */}
         <div className="mb-8 relative z-10">
-          <div className="border-b border-gray-200 animate-float-up">
+          <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => handleTabChange('profile')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'profile'
-                    ? 'border-blue-500 text-blue-600 animate-pulse-glow'
+                    ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
@@ -90,7 +90,7 @@ export default function EmployeeProfile() {
                 onClick={() => handleTabChange('edit')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'edit'
-                    ? 'border-blue-500 text-blue-600 animate-pulse-glow'
+                    ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
@@ -101,7 +101,7 @@ export default function EmployeeProfile() {
                 onClick={() => handleTabChange('skills')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'skills'
-                    ? 'border-blue-500 text-blue-600 animate-pulse-glow'
+                    ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
@@ -115,15 +115,15 @@ export default function EmployeeProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
           {/* Profile Info */}
           <div className="lg:col-span-1">
-            <div className="modern-card p-6 animate-float-up sticky top-8">
-              <div className="text-center mb-6 animate-float-down">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-glow shadow-lg border border-blue-200">
+            <div className="modern-card p-6 sticky top-8">
+              <div className="text-center mb-6">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200">
                   <span className="text-3xl font-bold text-blue-600">
                     {currentEmployee.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900 animate-float-up">{currentEmployee.name}</h2>
-                <p className="text-gray-600 capitalize animate-float-down">{currentEmployee.role}</p>
+                <h2 className="text-xl font-semibold text-gray-900">{currentEmployee.name}</h2>
+                <p className="text-gray-600 capitalize">{currentEmployee.role}</p>
               </div>
 
               <div className="space-y-4">
@@ -156,7 +156,7 @@ export default function EmployeeProfile() {
                 )}
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-200 animate-float-up">
+              <div className="mt-6 pt-6 border-t border-gray-200">
                 <div className="text-center">
                   <p className="text-sm text-gray-500">
                     Profile last updated
@@ -175,7 +175,7 @@ export default function EmployeeProfile() {
           {/* Skills and Availability */}
           <div className="lg:col-span-2">
             {activeTab === 'profile' && (
-              <div className="space-y-8 animate-float-up">
+              <div className="space-y-8">
                 {/* Profile Details Section */}
                 <div className="modern-card p-6">
                   <ProfileDetailsManager
@@ -191,7 +191,7 @@ export default function EmployeeProfile() {
             )}
 
             {activeTab === 'edit' && (
-              <div className="space-y-8 animate-float-up">
+              <div className="space-y-8">
                 {/* Editable Profile Details Section */}
                 <div className="modern-card p-6">
                   <ProfileDetailsManager
@@ -204,7 +204,7 @@ export default function EmployeeProfile() {
             )}
 
             {activeTab === 'skills' && (
-              <div className="space-y-8 animate-float-up">
+              <div className="space-y-8">
                 {/* Skills Section */}
                 <div className="modern-card p-6">
                   <SkillsManager
@@ -217,7 +217,7 @@ export default function EmployeeProfile() {
                 </div>
 
                 {/* Availability Section */}
-                <div className="modern-card p-6 animate-float-down">
+                <div className="modern-card p-6">
                   <AvailabilityManager
                     availability={currentEmployee.availability}
                     availabilityNotes={currentEmployee.availabilityNotes}
@@ -227,8 +227,8 @@ export default function EmployeeProfile() {
                 </div>
 
                 {/* Quick Stats */}
-                <div className="modern-card p-6 animate-float-up">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 animate-float-up">Quick Stats</h3>
+                <div className="modern-card p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg hover:shadow-lg transition-all duration-300 border border-blue-200">
                       <p className="text-2xl font-bold text-blue-600">{currentEmployee.skills.length}</p>

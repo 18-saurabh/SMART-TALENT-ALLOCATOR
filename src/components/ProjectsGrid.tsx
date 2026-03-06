@@ -45,7 +45,7 @@ function Pagination({ currentPage, totalPages, onPageChange, totalItems, itemsPe
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6 animate-float-up">
+    <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
       <div className="flex justify-between flex-1 sm:hidden">
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -138,7 +138,7 @@ export default function ProjectsGrid() {
   if (loading) {
     return (
       <div className="modern-card p-6">
-        <div className="animate-pulse">
+        <div>
           <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (

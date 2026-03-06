@@ -112,10 +112,10 @@ export default function TeamAIInsightsCard({ className = '' }: TeamAIInsightsCar
   }
 
   return (
-    <div className={`modern-card p-6 group animate-float-up hover:shadow-2xl ${className}`}>
+    <div className={`modern-card p-6 group hover:shadow-2xl ${className}`}>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <Brain className="h-6 w-6 text-purple-600 animate-pulse-glow" />
+          <Brain className="h-6 w-6 text-purple-600" />
           <h3 className="text-lg font-semibold text-gray-900">Team AI Insights</h3>
         </div>
         <div className="flex items-center space-x-2">
@@ -131,14 +131,14 @@ export default function TeamAIInsightsCard({ className = '' }: TeamAIInsightsCar
             className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
             title="Refresh team insights"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4`} />
           </button>
         </div>
       </div>
 
       {loading ? (
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-3"></div>
+          <div className="rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-3"></div>
           <p className="text-gray-600">Analyzing team performance...</p>
         </div>
       ) : managerInsights ? (
@@ -187,7 +187,7 @@ export default function TeamAIInsightsCard({ className = '' }: TeamAIInsightsCar
 
                     {/* Expanded actions */}
                     {expandedEmployee === insight.employeeId && (
-                      <div className="mt-4 pt-4 border-t border-current border-opacity-20 animate-float-down">
+                      <div className="mt-4 pt-4 border-t border-current border-opacity-20">
                         <h6 className="text-sm font-medium text-gray-700 mb-3">Recommended Actions</h6>
                         <div className="space-y-2">
                           {insight.actions.map((action, actionIndex) => (

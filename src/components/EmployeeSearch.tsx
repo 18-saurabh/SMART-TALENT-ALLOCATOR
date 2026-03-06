@@ -89,9 +89,9 @@ export default function EmployeeSearch({
   };
 
   return (
-    <div className="modern-card p-6 animate-float-up hover:shadow-2xl">
+    <div className="modern-card p-6 hover:shadow-2xl">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center animate-float-up">
+        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
           <Users className="h-5 w-5 mr-2" />
           Team Search & Filter
         </h3>
@@ -110,13 +110,13 @@ export default function EmployeeSearch({
               isFilterOpen ? 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-600 shadow-md border border-blue-200' : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600 hover:shadow-md border border-gray-300'
             }`}
           >
-            <Filter className={`h-4 w-4 ${isFilterOpen ? 'animate-pulse' : ''}`} />
+            <Filter className={`h-4 w-4`} />
           </button>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="relative mb-4 animate-float-down">
+      <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
         <input
           type="text"
@@ -129,7 +129,7 @@ export default function EmployeeSearch({
 
       {/* Advanced Filters */}
       {isFilterOpen && (
-        <div className="space-y-4 pt-4 border-t border-gray-200 animate-float-up">
+        <div className="space-y-4 pt-4 border-t border-gray-200">
           {/* Skills Filter */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -180,7 +180,7 @@ export default function EmployeeSearch({
                         : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-gray-200 hover:to-gray-300 border border-gray-300'
                     }`}
                   >
-                    <Clock className={`h-3 w-3 ${isSelected ? 'animate-pulse' : ''}`} />
+                    <Clock className={`h-3 w-3`} />
                     <span>{option.label}</span>
                     <span className={`text-xs ${isSelected ? 'text-blue-200' : 'text-gray-500'}`}>
                       ({count})
@@ -209,14 +209,14 @@ export default function EmployeeSearch({
 
       {/* Active Filters Display */}
       {hasActiveFilters && (
-        <div className="mt-4 pt-4 border-t border-gray-200 animate-float-up">
+        <div className="mt-4 pt-4 border-t border-gray-200">
           <div className="flex flex-wrap gap-2">
             {filters.skills.map((skill) => (
               <span
                 key={skill}
                 className="inline-flex items-center px-2 py-1 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 text-xs rounded-full border border-blue-200 hover:shadow-md transition-all duration-300"
               >
-                <Star className="h-3 w-3 mr-1 animate-pulse" />
+                <Star className="h-3 w-3 mr-1" />
                 {skill}
                 <button
                   onClick={() => handleSkillToggle(skill)}
@@ -231,7 +231,7 @@ export default function EmployeeSearch({
                 key={availability}
                 className="inline-flex items-center px-2 py-1 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 text-xs rounded-full border border-green-200 hover:shadow-md transition-all duration-300"
               >
-                <Clock className="h-3 w-3 mr-1 animate-pulse" />
+                <Clock className="h-3 w-3 mr-1" />
                 {availability}
                 <button
                   onClick={() => handleAvailabilityToggle(availability)}

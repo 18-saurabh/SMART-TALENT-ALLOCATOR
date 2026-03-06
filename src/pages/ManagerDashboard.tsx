@@ -80,7 +80,7 @@ export default function ManagerDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -91,9 +91,9 @@ export default function ManagerDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
-        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-rotate"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
       </div>
       
       <div className="max-w-7xl mx-auto">
@@ -101,22 +101,22 @@ export default function ManagerDashboard() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4 relative z-10">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <Sparkles className="h-6 w-6 text-blue-600 animate-float-rotate" />
+              <Sparkles className="h-6 w-6 text-blue-600" />
               <span className="text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full">
                 Manager Dashboard
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 animate-float-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
               Welcome back, <span className="gradient-text">{userProfile?.name || 'Manager'}</span>!
             </h1>
-            <p className="text-gray-600 mt-2 animate-float-down">
+            <p className="text-gray-600 mt-2">
               Here's your team overview and project management hub
             </p>
           </div>
           <div className="flex space-x-3 mt-4 sm:mt-0">
             <button 
               onClick={() => setIsCreateModalOpen(true)}
-              className="modern-btn px-4 py-2 font-medium flex items-center space-x-2 animate-pulse-glow"
+              className="modern-btn px-4 py-2 font-medium flex items-center space-x-2"
             >
               <Plus className="h-4 w-4" />
               <span>New Project</span>
@@ -129,7 +129,7 @@ export default function ManagerDashboard() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="modern-card p-4 sm:p-6 group animate-float-up"
+              className="modern-card p-4 sm:p-6 group"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-center justify-between mb-4">
@@ -164,7 +164,7 @@ export default function ManagerDashboard() {
               <p className="text-gray-600 mb-6">Create your first project to get started with team management.</p>
               <button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="modern-btn px-6 py-3 font-medium animate-pulse-glow"
+                className="modern-btn px-6 py-3 font-medium"
               >
                 Create First Project
               </button>
@@ -186,7 +186,7 @@ export default function ManagerDashboard() {
               {projectsInReview > 0 && (
                 <div className="mt-8 modern-card p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <CheckCircle className="h-5 w-5 text-purple-600 mr-2 animate-pulse" />
+                    <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
                     Projects Pending Review ({projectsInReview})
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -294,7 +294,7 @@ export default function ManagerDashboard() {
                         onClick={() => setSelectedEmployee(selectedEmployee === employee.uid ? null : employee.uid)}
                       >
                         <div className="flex items-center space-x-3 mb-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center animate-pulse-glow">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
                             <span className="text-blue-600 font-semibold text-sm">
                               {employee.name.charAt(0).toUpperCase()}
                             </span>
@@ -307,7 +307,7 @@ export default function ManagerDashboard() {
                             )}
                           </div>
                           <div className="text-right">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(employee.availability)} animate-pulse`}>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(employee.availability)}`}>
                               {employee.availability}
                             </span>
                           </div>
@@ -336,7 +336,7 @@ export default function ManagerDashboard() {
                                 key={index}
                                 className="px-2 py-1 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 text-xs rounded-md flex items-center hover:shadow-sm transition-all duration-300"
                               >
-                                <Star className="h-3 w-3 mr-1 animate-pulse" />
+                                <Star className="h-3 w-3 mr-1" />
                                 {skill.name}
                               </span>
                             ))}
@@ -414,21 +414,21 @@ export default function ManagerDashboard() {
                   onClick={() => setIsCreateModalOpen(true)}
                   className="p-4 hover:bg-blue-50 rounded-lg transition-all duration-300 flex flex-col items-center justify-center space-y-2 border border-transparent hover:border-blue-200 hover:shadow-md group hover:-translate-y-1"
                 >
-                  <Plus className="h-8 w-8 text-blue-600 group-hover:animate-pulse" />
+                  <Plus className="h-8 w-8 text-blue-600" />
                   <span className="text-gray-700 font-medium">Create Project</span>
                 </button>
                 <button
                   onClick={() => setIsReportsModalOpen(true)}
                   className="p-4 hover:bg-purple-50 rounded-lg transition-all duration-300 flex flex-col items-center justify-center space-y-2 border border-transparent hover:border-purple-200 hover:shadow-md group hover:-translate-y-1"
                 >
-                  <BarChart3 className="h-8 w-8 text-purple-600 group-hover:animate-pulse" />
+                  <BarChart3 className="h-8 w-8 text-purple-600" />
                   <span className="text-gray-700 font-medium">View Reports</span>
                 </button>
                 <button
                   onClick={() => setIsTeamManagementModalOpen(true)}
                   className="p-4 hover:bg-green-50 rounded-lg transition-all duration-300 flex flex-col items-center justify-center space-y-2 border border-transparent hover:border-green-200 hover:shadow-md group hover:-translate-y-1"
                 >
-                  <Users className="h-8 w-8 text-green-600 group-hover:animate-pulse" />
+                  <Users className="h-8 w-8 text-green-600" />
                   <span className="text-gray-700 font-medium">Manage Team</span>
                 </button>
               </div>

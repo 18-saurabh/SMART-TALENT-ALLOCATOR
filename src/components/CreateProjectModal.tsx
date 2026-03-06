@@ -306,7 +306,7 @@ export default function CreateProjectModal({ isOpen, onClose, employees }: Creat
                   AI Recommendations
                 </h3>
                 {recommendationsLoading && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                  <div className="rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
                 )}
               </div>
 
@@ -321,7 +321,7 @@ export default function CreateProjectModal({ isOpen, onClose, employees }: Creat
 
               {recommendationsLoading && (
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-3"></div>
+                  <div className="rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-3"></div>
                   <p className="text-gray-500 text-sm">Generating recommendations...</p>
                 </div>
               )}

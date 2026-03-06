@@ -385,26 +385,26 @@ export default function AIInsights() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-up"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-down"></div>
-        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float-rotate"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-2 mb-4">
-            <Brain className="h-6 w-6 text-purple-600 animate-float-rotate" />
+            <Brain className="h-6 w-6 text-purple-600" />
             <span className="text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full">
               AI-Powered Insights
             </span>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 animate-float-up">
+              <h1 className="text-3xl font-bold text-gray-900">
                 <span className="gradient-text">AI Insights</span> Dashboard
               </h1>
-              <p className="text-gray-600 mt-2 animate-float-down">
+              <p className="text-gray-600 mt-2">
                 {userProfile.role === 'employee' 
                   ? 'Personalized career growth and skill recommendations'
                   : 'Team performance insights and skill gap analysis'
@@ -424,7 +424,7 @@ export default function AIInsights() {
                 className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
                 title="Refresh insights"
               >
-                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4`} />
               </button>
             </div>
           </div>
@@ -432,7 +432,7 @@ export default function AIInsights() {
 
         {loading ? (
           <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <div className="rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Generating AI insights...</p>
             <p className="text-sm text-gray-500 mt-2">Analyzing performance data and market trends</p>
           </div>
@@ -468,7 +468,7 @@ export default function AIInsights() {
                           onClick={() => setActiveTab(tab.id)}
                           className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-300 flex items-center space-x-2 ${
                             activeTab === tab.id
-                              ? 'border-blue-500 text-blue-600 animate-pulse-glow'
+                              ? 'border-blue-500 text-blue-600'
                               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                           }`}
                         >
@@ -482,7 +482,7 @@ export default function AIInsights() {
               </div>
 
               {/* Tab Content */}
-              <div className="modern-card p-6 animate-float-up">
+              <div className="modern-card p-6">
                 {activeTab === 'overview' && (
                   <div className="space-y-6">
                     <h2 className="text-xl font-semibold text-gray-900 flex items-center">
@@ -788,7 +788,7 @@ export default function AIInsights() {
             {/* Sidebar */}
             <div className="lg:col-span-1 space-y-6">
               {/* Quick Summary */}
-              <div className="modern-card p-6 animate-float-up sticky top-8">
+              <div className="modern-card p-6 sticky top-8">
                 <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
                   <Sparkles className="h-5 w-5 mr-2 text-purple-600" />
                   Quick Summary
@@ -849,7 +849,7 @@ export default function AIInsights() {
 
               {/* Recommended Courses */}
               {userProfile.role === 'employee' && employeeInsights && (
-                <div className="modern-card p-6 animate-float-down">
+                <div className="modern-card p-6">
                   <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
                     <BookOpen className="h-5 w-5 mr-2 text-green-600" />
                     Recommended Courses

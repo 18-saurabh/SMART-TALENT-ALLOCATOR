@@ -55,7 +55,7 @@ export default function ProjectCard({ project, isManager, onStatusUpdate }: Proj
               {project.priority.toUpperCase()}
             </span>
             {isOverdue && !isCompleted && (
-              <AlertCircle className="h-5 w-5 text-red-500 animate-pulse" title="Overdue" />
+              <AlertCircle className="h-5 w-5 text-red-500" title="Overdue" />
             )}
             {isCompleted && (
               <span className="px-2 py-1 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 text-xs font-medium rounded-full border border-green-200">

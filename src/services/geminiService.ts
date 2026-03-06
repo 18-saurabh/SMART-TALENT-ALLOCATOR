@@ -131,7 +131,7 @@ AvailabilityStatus should be:
             score: rec.score || 0,
             reasons: rec.reasons || [],
             skillMatches: rec.skillMatches || [],
-            availabilityStatus: rec.availabilityStatus || 'good'
+            availabilityStatus: (rec.availabilityStatus || 'good') as 'excellent' | 'good' | 'limited' | 'unavailable'
           });
         }
       }
@@ -140,7 +140,12 @@ AvailabilityStatus should be:
     } catch (error) {
       console.error('Error parsing AI recommendations:', error);
       return this.generateFallbackRecommendations(
-        { requiredSkills: [] } as ProjectRequirements,
+        {
+          title: 'Unknown Project',
+          description: 'Project details unavailable',
+          requiredSkills: [],
+          priority: 'medium'
+        } as ProjectRequirements,
         employees
       );
     }
@@ -183,8 +188,8 @@ AvailabilityStatus should be:
         score: Math.round(score),
         reasons,
         skillMatches,
-        availabilityStatus: employee.availability === 'available' ? 'excellent' :
-                           employee.availability === 'limited' ? 'limited' : 'unavailable'
+        availabilityStatus: (employee.availability === 'available' ? 'excellent' :
+                           employee.availability === 'limited' ? 'limited' : 'unavailable') as 'excellent' | 'good' | 'limited' | 'unavailable'
       };
     }).sort((a, b) => b.score - a.score);
   }

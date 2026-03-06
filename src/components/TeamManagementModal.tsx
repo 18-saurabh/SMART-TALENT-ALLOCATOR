@@ -249,7 +249,7 @@ export default function TeamManagementModal({ isOpen, onClose }: TeamManagementM
                       <Sparkles className="h-5 w-5 text-purple-600" />
                       <h3 className="text-lg font-semibold text-gray-900">AI Recommendations</h3>
                       {recommendationsLoading && (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                        <div className="rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
                       )}
                     </div>
                     
