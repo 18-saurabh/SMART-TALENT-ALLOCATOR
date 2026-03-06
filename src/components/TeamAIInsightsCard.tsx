@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Brain, RefreshCw, Users, AlertTriangle, TrendingUp, CheckCircle, Calendar, MessageSquare, BookOpen, UserPlus, Info, Clock } from 'lucide-react';
 import { useAIInsights } from '../hooks/useAIInsights';
-import { ManagerInsight, InsightAction } from '../services/aiInsightsService';
+import { InsightAction } from '../services/aiInsightsService';
 
 interface TeamAIInsightsCardProps {
   className?: string;
@@ -19,6 +19,14 @@ export default function TeamAIInsightsCard({ className = '' }: TeamAIInsightsCar
   
   const [expandedEmployee, setExpandedEmployee] = useState<string | null>(null);
   const [feedbackGiven, setFeedbackGiven] = useState<Set<string>>(new Set());
+
+  // Converts **bold** and *italic* markdown to HTML for inline rendering
+  const formatMd = (text: string): string =>
+    text
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em class="italic text-gray-600">$1</em>')
+      .replace(/`(.+?)`/g, '<code class="bg-blue-50 text-blue-700 px-1 rounded text-xs font-mono">$1</code>');
+
 
   const handleRefresh = () => {
     refreshManagerInsights(true);
@@ -164,8 +172,11 @@ export default function TeamAIInsightsCard({ className = '' }: TeamAIInsightsCar
                       <div className="flex items-center space-x-3">
                         {getReasonIcon(insight.reason)}
                         <div>
-                          <h5 className="font-medium text-gray-900">{insight.employeeName}</h5>
-                          <p className="text-sm text-gray-700">{insight.detail}</p>
+                          <h5 className="font-semibold text-gray-900">{insight.employeeName}</h5>
+                          <p
+                            className="text-sm text-gray-700 mt-0.5 leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: formatMd(insight.detail) }}
+                          />
                           <span className="inline-block px-2 py-1 bg-white bg-opacity-50 text-xs font-medium rounded-full mt-1">
                             {insight.reason}
                           </span>
@@ -191,13 +202,16 @@ export default function TeamAIInsightsCard({ className = '' }: TeamAIInsightsCar
                         <h6 className="text-sm font-medium text-gray-700 mb-3">Recommended Actions</h6>
                         <div className="space-y-2">
                           {insight.actions.map((action, actionIndex) => (
-                            <div key={actionIndex} className="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-md">
+                            <div key={actionIndex} className="flex items-center justify-between p-3 bg-white bg-opacity-60 rounded-md border border-white border-opacity-50">
                               <div className="flex items-center space-x-2">
                                 {getActionIcon(action.type)}
                                 <div>
-                                  <p className="text-sm font-medium text-gray-900">{action.label}</p>
+                                  <p
+                                    className="text-sm font-medium text-gray-900"
+                                    dangerouslySetInnerHTML={{ __html: formatMd(action.label) }}
+                                  />
                                   {action.meta.suggested_length && (
-                                    <p className="text-xs text-gray-500">Duration: {action.meta.suggested_length}</p>
+                                    <p className="text-xs text-gray-500">Duration: <strong>{action.meta.suggested_length}</strong></p>
                                   )}
                                   {action.meta.priority && (
                                     <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full mt-1 ${
@@ -212,9 +226,9 @@ export default function TeamAIInsightsCard({ className = '' }: TeamAIInsightsCar
                               </div>
                               <button
                                 onClick={() => executeAction(action, insight.employeeName)}
-                                className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors duration-200"
+                                className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors duration-200 ml-3 flex-shrink-0"
                               >
-                                Start Action
+                                Start
                               </button>
                             </div>
                           ))}

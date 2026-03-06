@@ -115,8 +115,8 @@ export default function Planner() {
 
       try {
         await generateCompletionRecommendations(project);
-      } finally {
-        setAiLoading(false);
+      } catch (err) {
+        console.error('Failed to generate completion recommendations:', err);
       }
       return;
     }
@@ -126,16 +126,16 @@ export default function Planner() {
       setError(null);
       try {
         await generateStatusChangeAISuggestions(project, 'in-progress');
-      } finally {
-        setAiLoading(false);
+      } catch (err) {
+        console.error('Failed to generate status suggestions:', err);
       }
     } else {
       setError(null);
       setAiLoading(true);
       try {
         await generateStatusChangeAISuggestions(project, project.status);
-      } finally {
-        setAiLoading(false);
+      } catch (err) {
+        console.error('Failed to generate status suggestions:', err);
       }
     }
   };
@@ -143,122 +143,309 @@ export default function Planner() {
   const generateCompletionRecommendations = async (project: any) => {
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      
       if (!apiKey) {
-        throw new Error('Gemini API key not found');
+        const setupMessage = 'Gemini API key not found. To enable AI features:\n' +
+          '1. Create a .env.local file in your project root\n' +
+          '2. Add: VITE_GEMINI_API_KEY=your_api_key_here\n' +
+          '3. Get your API key from: https://makersuite.google.com/app/apikey\n' +
+          '4. Restart your development server';
+        setError(setupMessage);
+        console.warn('Missing VITE_GEMINI_API_KEY:', setupMessage);
+        return;
       }
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
 
       const isManager = userProfile?.role === 'manager';
 
-      const prompt = `
-The project "${project.title}" is already completed. The user is asking for recommendations.
+      const deadlineStr = project.deadline ? new Date(project.deadline).toLocaleDateString() : 'N/A';
+      let prompt = '';
 
-${isManager ? `
-As a manager, provide recommendations on:
-1. **Next Steps**: What should be done after project completion (documentation, retrospective, handover)
-2. **Team Recognition**: How to acknowledge team achievements
-3. **Lessons Learned**: Key takeaways for future projects
-4. **Resource Reallocation**: How to redeploy team members to new projects
-5. **Success Metrics**: How to measure and report project success
+      if (isManager) {
+        prompt = `You are a senior project management advisor. A project has just been completed. Provide specific, insightful post-completion recommendations tailored to this project.
 
-Format the response with bold headings using ** for each section.
-` : `
-As an employee who worked on this completed project, provide recommendations on:
-1. **Knowledge Transfer**: How to document and share learnings with the team
-2. **Skill Development**: New skills gained and areas for further improvement
-3. **Next Opportunities**: Types of projects that would build on this experience
-4. **Feedback Request**: What feedback to seek from managers and peers
-5. **Portfolio Building**: How to showcase this project achievement
+**Project Details:**
+- **Project Name:** ${project.title}
+- **Description:** ${project.description || 'Not provided'}
+- **Priority Level:** ${project.priority}
+- **Final Progress:** ${project.progress}%
+- **Team Size:** ${project.assignedEmployees?.length || 0} members
+- **Original Deadline:** ${deadlineStr}
 
-Format the response with bold headings using ** for each section.
-`}
+As a **Manager**, generate a structured post-completion report using exactly these sections. Format using markdown: ## for section headers with emojis, **bold** for key terms, - for bullet points.
 
-Keep suggestions concise, actionable, and formatted with clear bold headings.
-`;
+## 🎯 Immediate Next Steps
+Provide 3–4 specific, time-bound actions to take this week (documentation, stakeholder sign-off, knowledge handoff).
 
+## 🏆 Team Recognition & Acknowledgement
+Concrete, meaningful ways to recognize each team member's contributions and celebrate the milestone publicly.
+
+## 📚 Lessons Learned
+Top 3–4 key takeaways that should be formally documented in a retrospective for future teams to reference.
+
+## 🔄 Resource Reallocation Strategy
+Specific recommendations for reassigning team members, identifying skill gaps revealed, and planning next engagements.
+
+## 📊 Success Metrics & Stakeholder Reporting
+How to quantify outcomes (delivered features, time-to-delivery, budget adherence) and present results to stakeholders.
+
+---
+Be direct and specific to "${project.title}". Avoid generic advice.`;
+      } else {
+        prompt = `You are a career development coach. A project you contributed to has just been completed. Provide structured, practical recommendations to maximize your professional growth.
+
+**Project Details:**
+- **Project Name:** ${project.title}
+- **Description:** ${project.description || 'Not provided'}
+- **Priority Level:** ${project.priority}
+- **Final Progress:** ${project.progress}%
+- **Original Deadline:** ${deadlineStr}
+
+As a **Team Member**, generate a structured growth plan using exactly these sections. Format using markdown: ## for section headers with emojis, **bold** for key terms, - for bullet points.
+
+## 💡 Knowledge Transfer Actions
+3–4 specific ways to share your learnings with teammates (documentation, tech talks, pair programming, retrospective contributions).
+
+## 🚀 Skills You've Strengthened
+Reflect on the concrete technical and soft skills you developed through this project and how they position you going forward.
+
+## 🔭 Career Growth Opportunities
+Specific project types, technologies, or roles that naturally follow from the skills and experience you gained here.
+
+## 🗣️ Getting Impactful Feedback
+Exact questions to ask your manager and peers to extract meaningful, growth-focused feedback right after project completion.
+
+## 🗂️ Portfolio & Professional Recognition
+Specific steps to showcase this achievement on your resume, LinkedIn, or internal recognition channels.
+
+---
+Be specific to "${project.title}". Provide actionable advice that directly applies to this project's context.`;
+      }
+
+      console.log('Sending prompt to Gemini API...');
       const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const suggestions = response.text();
+      const suggestions = result.response?.text();
 
+      if (!suggestions) {
+        throw new Error('No response received from AI model');
+      }
+
+      console.log('AI suggestions received successfully');
       setAiSuggestions(formatAISuggestions(suggestions));
-    } catch (err) {
+      setError(null);
+    } catch (err: any) {
       console.error('Error generating recommendations:', err);
-      setError('Failed to generate recommendations. Please try again.');
+      let errorMessage = 'Failed to generate recommendations. ';
+      
+      if (err?.message?.includes('API key')) {
+        errorMessage += 'API key issue - check your .env.local setup';
+      } else if (err?.message?.includes('PERMISSION_DENIED')) {
+        errorMessage += 'API permission denied - verify your API key is valid';
+      } else if (err?.message?.includes('RESOURCE_EXHAUSTED')) {
+        errorMessage += 'API quota exceeded - try again later';
+      } else {
+        errorMessage += err?.message || 'Please try again';
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setAiLoading(false);
     }
   };
 
   const generateStatusChangeAISuggestions = async (project: any, status: ProjectStatus) => {
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      
       if (!apiKey) {
-        throw new Error('Gemini API key not found');
+        const setupMessage = 'Gemini API key not found. To enable AI features:\n' +
+          '1. Create a .env.local file in your project root\n' +
+          '2. Add: VITE_GEMINI_API_KEY=your_api_key_here\n' +
+          '3. Get your API key from: https://makersuite.google.com/app/apikey\n' +
+          '4. Restart your development server';
+        setError(setupMessage);
+        console.warn('Missing VITE_GEMINI_API_KEY:', setupMessage);
+        return;
       }
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
 
       const assignedEmployees = allEmployees.filter(emp =>
         project.assignedEmployees.includes(emp.uid)
       );
 
       const isManager = userProfile?.role === 'manager';
+      
+      const teamInfo = assignedEmployees.length > 0
+        ? assignedEmployees.map(emp => `${emp.name} (Availability: ${emp.availability})`).join(', ')
+        : 'Team members to be assigned';
 
-      const prompt = `
-Project "${project.title}" is currently in "${status}" status.
+      const deadlineStr = project.deadline ? new Date(project.deadline).toLocaleDateString() : 'N/A';
+      let prompt = '';
 
-PROJECT DETAILS:
-- Description: ${project.description}
-- Priority: ${project.priority}
-- Progress: ${project.progress}%
-- Deadline: ${project.deadline}
+      if (isManager) {
+        prompt = `You are a senior project management advisor. Analyze this active project and provide targeted, actionable recommendations based on its current state.
 
-TEAM MEMBERS:
-${assignedEmployees.map(emp => `
-- ${emp.name}:
-  * Availability: ${emp.availability}
-  * Skills: ${emp.skills.map(s => `${s.name} (${s.level})`).join(', ')}
-`).join('')}
+**Project Status Report:**
+- **Project Name:** ${project.title}
+- **Description:** ${project.description || 'Not provided'}
+- **Current Status:** ${status}
+- **Completion Progress:** ${project.progress}%
+- **Priority:** ${project.priority}
+- **Deadline:** ${deadlineStr}
+- **Team:** ${teamInfo}
 
-${isManager ? `
-As a manager, provide specific actionable suggestions to improve efficiency:
-1. **Resource Optimization**: How to better allocate team members and resources
-2. **Timeline Management**: Strategies to meet deadlines and manage priorities
-3. **Risk Mitigation**: Potential risks and how to address them proactively
-4. **Team Coordination**: Ways to improve communication and collaboration
-5. **Performance Tracking**: Key metrics to monitor project health
+As a **Manager**, generate a structured action plan using exactly these sections. Format using markdown: ## for section headers with emojis, **bold** for key terms, - for bullet points.
 
-Format the response with bold headings using ** for each section.
-` : `
-As an employee working on this project, provide suggestions on:
-1. **Task Prioritization**: Which tasks to focus on first for maximum impact
-2. **Skill Application**: How to best apply your skills to deliver quality work
-3. **Time Management**: Strategies to complete tasks efficiently within deadlines
-4. **Collaboration Tips**: How to work effectively with team members
-5. **Quality Assurance**: Best practices to ensure high-quality deliverables
+## 📋 Priority Actions This Week
+The 3–4 most critical management actions to take right now, given the ${status} status and ${project.progress}% completion.
 
-Format the response with bold headings using ** for each section.
-`}
+## 👥 Team Optimization
+Specific recommendations to improve workload distribution and maximize team output based on the current team composition.
 
-Keep suggestions concise, practical, and formatted with clear bold headings.
-`;
+## ⚠️ Risk Assessment
+The top 2–3 risks to address immediately given the current timeline and status, with concrete mitigation steps for each.
 
+## 📅 Timeline & Milestone Management
+Targeted tactics to stay on track or recover schedule to meet the ${deadlineStr} deadline.
+
+## 📈 Key Metrics to Monitor
+The 3–4 specific KPIs and checkpoints that will signal project health over the next week.
+
+---
+Ground all recommendations in the actual project context. Be specific to "${project.title}" at ${project.progress}% completion.`;
+      } else {
+        prompt = `You are a project success coach. Analyze this active project and provide targeted, practical advice to help you succeed as a contributing team member.
+
+**Your Project Context:**
+- **Project Name:** ${project.title}
+- **Description:** ${project.description || 'Not provided'}
+- **Current Status:** ${status}
+- **Completion Progress:** ${project.progress}%
+- **Priority:** ${project.priority}
+- **Deadline:** ${deadlineStr}
+- **Your Team:** ${teamInfo}
+
+As a **Team Member**, generate a structured action plan using exactly these sections. Format using markdown: ## for section headers with emojis, **bold** for key terms, - for bullet points.
+
+## 🎯 Your Top Priorities Right Now
+The 3–4 most important tasks to focus on this week, given the project is at ${project.progress}% in ${status} status.
+
+## 🛠️ Applying Your Skills Effectively
+How to best leverage your skills for the current phase of "${project.title}" and deliver maximum impact.
+
+## ⏱️ Meeting the Deadline
+Concrete time management strategies to ensure your deliverables are complete before ${deadlineStr}.
+
+## 🤝 Team Collaboration Tips
+Specific ways to coordinate effectively with your teammates at this stage of the project.
+
+## ✅ Quality & Delivery Standards
+How to ensure your work meets quality expectations and minimizes rework at the ${status} stage.
+
+---
+Be specific to "${project.title}" at ${project.progress}% completion with a ${deadlineStr} deadline.`;
+      }
+
+      console.log('Sending prompt to Gemini API...');
       const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const suggestions = response.text();
+      const suggestions = result.response?.text();
 
+      if (!suggestions) {
+        throw new Error('No response received from AI model');
+      }
+
+      console.log('AI suggestions received successfully');
       setAiSuggestions(formatAISuggestions(suggestions));
-    } catch (err) {
+      setError(null);
+    } catch (err: any) {
       console.error('Error generating AI suggestions:', err);
-      setError('Failed to generate AI suggestions. Please try again.');
+      let errorMessage = 'Failed to generate AI suggestions. ';
+      
+      if (err?.message?.includes('API key')) {
+        errorMessage += 'API key issue - check your .env.local setup';
+      } else if (err?.message?.includes('PERMISSION_DENIED')) {
+        errorMessage += 'API permission denied - verify your API key is valid';
+      } else if (err?.message?.includes('RESOURCE_EXHAUSTED')) {
+        errorMessage += 'API quota exceeded - try again later';
+      } else {
+        errorMessage += err?.message || 'Please try again';
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setAiLoading(false);
     }
   };
 
   const formatAISuggestions = (text: string): string => {
-    return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br/>');
+    const formatInline = (str: string): string =>
+      str
+        .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em class="italic text-gray-600">$1</em>')
+        .replace(/`(.+?)`/g, '<code class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs font-mono">$1</code>');
+
+    const lines = text.split('\n');
+    let html = '';
+    let inList = false;
+    let listType: 'ul' | 'ol' | null = null;
+
+    const closeList = () => {
+      if (inList) {
+        html += listType === 'ul' ? '</ul>' : '</ol>';
+        inList = false;
+        listType = null;
+      }
+    };
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      if (trimmed.startsWith('## ')) {
+        closeList();
+        html += `<h2 class="text-sm font-bold text-blue-700 mt-5 mb-2 pb-1 border-b border-blue-100 flex items-center gap-1">${formatInline(trimmed.slice(3))}</h2>`;
+      } else if (trimmed.startsWith('### ')) {
+        closeList();
+        html += `<h3 class="text-sm font-semibold text-gray-800 mt-3 mb-1">${formatInline(trimmed.slice(4))}</h3>`;
+      } else if (trimmed.startsWith('# ')) {
+        closeList();
+        html += `<h1 class="text-base font-bold text-gray-900 mb-3">${formatInline(trimmed.slice(2))}</h1>`;
+      } else if (/^[-*] /.test(trimmed)) {
+        if (!inList || listType !== 'ul') {
+          closeList();
+          html += '<ul class="my-1.5 space-y-1">';
+          inList = true;
+          listType = 'ul';
+        }
+        html += `<li class="flex items-start gap-2 text-gray-700 text-sm"><span class="text-blue-500 mt-1 flex-shrink-0 text-xs">●</span><span>${formatInline(trimmed.slice(2))}</span></li>`;
+      } else if (/^\d+\. /.test(trimmed)) {
+        if (!inList || listType !== 'ol') {
+          closeList();
+          html += '<ol class="my-1.5 space-y-1 list-none">';
+          inList = true;
+          listType = 'ol';
+        }
+        const m = trimmed.match(/^(\d+)\. (.+)$/);
+        if (m) {
+          html += `<li class="flex items-start gap-2 text-gray-700 text-sm"><span class="text-blue-600 font-bold w-5 flex-shrink-0">${m[1]}.</span><span>${formatInline(m[2])}</span></li>`;
+        }
+      } else if (trimmed === '---' || trimmed === '***') {
+        closeList();
+        html += '<hr class="my-3 border-gray-200"/>';
+      } else if (trimmed === '') {
+        closeList();
+        html += '<div class="h-1"></div>';
+      } else {
+        closeList();
+        html += `<p class="text-gray-700 text-sm mb-1">${formatInline(trimmed)}</p>`;
+      }
+    }
+
+    closeList();
+    return html;
   };
 
   const getPriorityColor = (priority: string) => {
@@ -328,7 +515,8 @@ Keep suggestions concise, practical, and formatted with clear bold headings.
                   </button>
                 </div>
                 <div
-                  className="prose prose-sm max-w-none text-left text-gray-700"
+                  className="mt-3 text-left max-h-80 overflow-y-auto pr-2 border-t border-gray-100 pt-3"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#cbd5e1 transparent' }}
                   dangerouslySetInnerHTML={{ __html: aiSuggestions }}
                 />
               </div>
@@ -358,9 +546,9 @@ Keep suggestions concise, practical, and formatted with clear bold headings.
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 text-red-700">
-            <AlertCircle className="h-5 w-5" />
-            <span>{error}</span>
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 text-red-700">
+            <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+            <div className="text-sm whitespace-pre-wrap">{error}</div>
           </div>
         )}
 

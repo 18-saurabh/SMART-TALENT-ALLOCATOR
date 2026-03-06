@@ -20,6 +20,14 @@ export default function AIInsightsCard({ className = '' }: AIInsightsCardProps) 
   const [expandedInsight, setExpandedInsight] = useState<number | null>(null);
   const [feedbackGiven, setFeedbackGiven] = useState<Set<number>>(new Set());
 
+  // Converts **bold** and *italic* markdown to HTML for inline rendering
+  const formatMd = (text: string): string =>
+    text
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em class="italic text-gray-600">$1</em>')
+      .replace(/`(.+?)`/g, '<code class="bg-blue-50 text-blue-700 px-1 rounded text-xs font-mono">$1</code>');
+
+
   const handleRefresh = () => {
     refreshEmployeeInsights(true);
   };
@@ -173,10 +181,13 @@ export default function AIInsightsCard({ className = '' }: AIInsightsCardProps) 
 
                 {/* Expanded details */}
                 {expandedInsight === index && (
-                  <div className="mt-4 pt-4 border-t border-current border-opacity-20">
+                    <div className="mt-4 pt-4 border-t border-current border-opacity-20">
                     <div className="mb-3">
-                      <h6 className="text-sm font-medium text-gray-700 mb-1">Why this suggestion?</h6>
-                      <p className="text-sm text-gray-600">{insight.rationale}</p>
+                      <h6 className="text-sm font-semibold text-gray-700 mb-1">Why this suggestion?</h6>
+                      <p
+                        className="text-sm text-gray-600 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: formatMd(insight.rationale) }}
+                      />
                     </div>
 
                     {/* Actions */}
@@ -185,18 +196,28 @@ export default function AIInsightsCard({ className = '' }: AIInsightsCardProps) 
                         <h6 className="text-sm font-medium text-gray-700 mb-2">Recommended Actions</h6>
                         <div className="space-y-2">
                           {insight.actions.map((action, actionIndex) => (
-                            <div key={actionIndex} className="flex items-center justify-between p-2 bg-white bg-opacity-50 rounded-md">
+                            <div key={actionIndex} className="flex items-center justify-between p-2 bg-white bg-opacity-60 rounded-md border border-white border-opacity-50">
                               <div>
-                                <p className="text-sm font-medium text-gray-900">{action.label}</p>
+                                <p
+                                  className="text-sm font-medium text-gray-900"
+                                  dangerouslySetInnerHTML={{ __html: formatMd(action.label) }}
+                                />
                                 {action.meta.est_time && (
-                                  <p className="text-xs text-gray-500">Estimated time: {action.meta.est_time}</p>
+                                  <p className="text-xs text-gray-500 mt-0.5">Est. time: <strong>{action.meta.est_time}</strong></p>
+                                )}
+                                {action.meta.priority && (
+                                  <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full mt-1 ${
+                                    action.meta.priority === 'high' ? 'bg-red-100 text-red-700' :
+                                    action.meta.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                    'bg-gray-100 text-gray-600'
+                                  }`}>{action.meta.priority} priority</span>
                                 )}
                               </div>
                               <button
                                 onClick={() => executeAction(action)}
-                                className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors duration-200"
+                                className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors duration-200 ml-3 flex-shrink-0"
                               >
-                                Start Action
+                                Start
                               </button>
                             </div>
                           ))}

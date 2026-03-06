@@ -102,7 +102,7 @@ class AIInsightsService {
       throw new Error('Gemini API key not found in environment variables');
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
   }
 
   async generateEmployeeInsights(
@@ -177,71 +177,83 @@ class AIInsightsService {
     learningHistory: LearningHistory[],
     goalProgress: GoalProgress[]
   ): string {
-    const recentPerformance = performanceRecords.slice(-6); // Last 6 records
-    const recentProjects = projectHistory.slice(-5); // Last 5 projects
+    const recentPerformance = performanceRecords.slice(-6);
+    const recentProjects = projectHistory.slice(-5);
     const skillsList = employee.skills.map(s => `${s.name} (${s.level})`).join(', ');
+    const expertSkills = employee.skills.filter(s => s.level === 'expert' || s.level === 'advanced').map(s => s.name);
+    const avgScore = recentPerformance.length > 0
+      ? (recentPerformance.reduce((sum, r) => sum + r.score, 0) / recentPerformance.length).toFixed(1)
+      : 'N/A';
+    const completedProjects = projectHistory.filter(p => p.status === 'completed').length;
+    const inProgressProjects = projectHistory.filter(p => p.status === 'in-progress').length;
 
-    return `
-You are an AI career coach analyzing an employee's profile to provide supportive, actionable insights.
+    return `You are a senior career development coach and performance analyst. Analyze this employee's profile and generate specific, data-driven career insights.
 
 EMPLOYEE PROFILE:
 - Name: ${employee.name}
 - Role: ${employee.role}
 - Department: ${employee.department || 'Not specified'}
-- Skills: ${skillsList}
-- Availability: ${employee.availability}
+- Current Availability: ${employee.availability}
+- Total Skills: ${employee.skills.length} (Expert/Advanced: ${expertSkills.join(', ') || 'none listed'})
+- All Skills: ${skillsList || 'No skills listed'}
 
-RECENT PERFORMANCE (last 6 records):
-${recentPerformance.map(p => `- ${p.date.toLocaleDateString()}: Score ${p.score}/5, Feedback: "${p.feedback}" (${p.source})`).join('\n')}
+PERFORMANCE DATA:
+- Average Score: ${avgScore}/5 (based on ${recentPerformance.length} records)
+- Recent Performance Records:
+${recentPerformance.length > 0
+  ? recentPerformance.map(p => `  • ${p.date.toLocaleDateString()}: ${p.score}/5 — "${p.feedback}" [${p.source} review]`).join('\n')
+  : '  • No performance records available'}
 
-RECENT PROJECTS:
-${recentProjects.map(p => `- ${p.title}: ${p.status}, Progress: ${p.progress}%, Priority: ${p.priority}`).join('\n')}
+PROJECT HISTORY:
+- Completed: ${completedProjects} projects | In Progress: ${inProgressProjects} projects
+${recentProjects.length > 0
+  ? recentProjects.map(p => `  • ${p.title} — ${p.status} (${p.progress}% complete, ${p.priority} priority)`).join('\n')
+  : '  • No project history available'}
 
 LEARNING HISTORY:
-${learningHistory.map(l => `- ${l.course} (completed ${l.completedAt.toLocaleDateString()})`).join('\n')}
+${learningHistory.length > 0
+  ? learningHistory.map(l => `  • ${l.course} — completed ${l.completedAt.toLocaleDateString()}`).join('\n')
+  : '  • No learning history recorded'}
 
 GOAL PROGRESS:
-${goalProgress.map(g => `- ${g.goal}: ${g.progress}% (${g.status})`).join('\n')}
+${goalProgress.length > 0
+  ? goalProgress.map(g => `  • ${g.goal}: ${g.progress}% complete (${g.status})`).join('\n')
+  : '  • No goals recorded'}
 
-Please provide insights in the following JSON format:
+Generate insights in this exact JSON format (return ONLY valid JSON, no markdown, no extra text):
 {
-  "summary": "One-line summary (max 140 characters) highlighting main strength + top opportunity",
+  "summary": "One sentence (max 140 chars) naming ${employee.name}'s key strength and the single most important growth opportunity right now",
   "insights": [
     {
       "type": "Strength",
-      "detail": "Specific strength with evidence",
-      "rationale": "Brief explanation of why this is a strength",
+      "detail": "1-2 sentences describing a concrete strength with specific evidence from the data above (name actual skills, scores, or projects)",
+      "rationale": "Explain specifically which data points (performance scores, project outcomes, skill levels) demonstrate this strength",
       "confidence": 85,
       "actions": []
     },
     {
       "type": "Gap",
-      "detail": "Specific skill gap or development area",
-      "rationale": "Evidence from data showing this gap",
+      "detail": "1-2 sentences identifying a specific skill gap or growth area, grounded in the data (what's missing vs. what would unlock the next career level?)",
+      "rationale": "Cite the specific evidence (missing skills, performance patterns, project gaps) that points to this development area",
       "confidence": 78,
       "actions": [
         {
           "type": "learning",
-          "label": "Specific actionable step (max 12 words)",
-          "meta": {
-            "est_time": "2 weeks",
-            "priority": "high"
-          }
+          "label": "Specific learning action with a named skill or resource (max 12 words)",
+          "meta": { "est_time": "3-4 weeks", "priority": "high" }
         }
       ]
     },
     {
       "type": "NextStep",
-      "detail": "Immediate actionable next step",
-      "rationale": "Why this step will help career growth",
+      "detail": "1-2 sentences describing the single most impactful action ${employee.name} should take in the next 2 weeks to accelerate growth",
+      "rationale": "Explain why this specific next step is the highest-leverage action given the current data and career stage",
       "confidence": 82,
       "actions": [
         {
           "type": "task",
-          "label": "Specific task (max 12 words)",
-          "meta": {
-            "est_time": "1 week"
-          }
+          "label": "Concrete, named task — specific enough to start immediately (max 12 words)",
+          "meta": { "est_time": "1-2 weeks", "priority": "high" }
         }
       ]
     }
@@ -249,14 +261,13 @@ Please provide insights in the following JSON format:
   "confidence_score": 83
 }
 
-Requirements:
-1. Provide exactly 3 insights: 1 Strength, 1 Gap, 1 NextStep
-2. Keep summary under 140 characters
-3. Be supportive and career-focused in tone
-4. Include confidence scores (0-100)
-5. Provide specific, actionable recommendations
-6. Base rationale on actual data provided
-`;
+Critical rules:
+1. Provide EXACTLY 3 insights in this order: Strength, Gap, NextStep
+2. Every insight must reference specific data from the profile above — no generic advice
+3. "detail" should be 1-2 sentences max, direct and meaningful
+4. "rationale" must cite specific evidence (actual scores, project names, skill levels)
+5. Action labels must be concrete and actionable, not vague
+6. Summary must be under 140 characters`;
   }
 
   private buildManagerPrompt(
@@ -269,54 +280,68 @@ Requirements:
       const recentScore = records.length > 0 ? records[records.length - 1].score : 0;
       const avgScore = records.length > 0 ? records.reduce((sum, r) => sum + r.score, 0) / records.length : 0;
       const empProjects = projectHistory.filter(p => p.assignedEmployees.includes(emp.uid));
-      
+      const expertSkills = emp.skills.filter(s => s.level === 'expert' || s.level === 'advanced').map(s => s.name);
+      const trend = records.length >= 2
+        ? (records[records.length - 1].score > records[records.length - 2].score ? 'improving' : 'declining')
+        : 'stable';
+
       return {
         name: emp.name,
         id: emp.uid,
-        skills: emp.skills.length,
+        department: emp.department || 'Unspecified',
+        role: emp.role,
+        totalSkills: emp.skills.length,
+        expertSkills,
         availability: emp.availability,
         recentScore,
         avgScore: Math.round(avgScore * 10) / 10,
-        projectCount: empProjects.length,
-        completedProjects: empProjects.filter(p => p.status === 'completed').length
+        performanceTrend: trend,
+        totalProjects: empProjects.length,
+        completedProjects: empProjects.filter(p => p.status === 'completed').length,
+        inProgressProjects: empProjects.filter(p => p.status === 'in-progress').length,
+        recentFeedback: records.slice(-2).map(r => `"${r.feedback}" [${r.source}]`).join('; ')
       };
     });
 
-    return `
-You are an AI management assistant analyzing team performance to provide actionable insights for a manager.
+    const teamSize = employees.length;
+    const availableCount = employees.filter(e => e.availability === 'available').length;
+    const avgTeamScore = teamData.length > 0
+      ? (teamData.reduce((sum, e) => sum + e.avgScore, 0) / teamData.length).toFixed(1)
+      : 'N/A';
 
-TEAM OVERVIEW:
+    return `You are a director-level management consultant specializing in engineering team performance. Analyze this team and provide specific, evidence-based insights a manager can act on today.
+
+TEAM SUMMARY:
+- Team Size: ${teamSize} members | Available Now: ${availableCount}/${teamSize}
+- Team Average Performance Score: ${avgTeamScore}/5
+
+DETAILED TEAM DATA:
 ${teamData.map(emp => `
-- ${emp.name} (${emp.id}):
-  * Skills: ${emp.skills} listed
-  * Availability: ${emp.availability}
-  * Recent Performance: ${emp.recentScore}/5
-  * Average Performance: ${emp.avgScore}/5
-  * Projects: ${emp.completedProjects}/${emp.projectCount} completed
-`).join('')}
+▸ ${emp.name} (${emp.role} — ${emp.department})
+  Availability: ${emp.availability} | Skills: ${emp.totalSkills} total (Expert/Advanced: ${emp.expertSkills.join(', ') || 'none'})
+  Performance: Recent ${emp.recentScore}/5 | Average ${emp.avgScore}/5 | Trend: ${emp.performanceTrend}
+  Projects: ${emp.completedProjects} completed / ${emp.inProgressProjects} active / ${emp.totalProjects} total
+  Recent Feedback: ${emp.recentFeedback || 'No feedback recorded'}`).join('\n')}
 
-RECENT PROJECTS:
-${projectHistory.slice(-10).map(p => `- ${p.title}: ${p.status}, Team: ${p.assignedEmployeeNames.join(', ')}`).join('\n')}
+ACTIVE & RECENT PROJECTS:
+${projectHistory.slice(-10).map(p => `  • ${p.title} [${p.status}] — Team: ${p.assignedEmployeeNames.join(', ') || 'Unassigned'}`).join('\n')}
 
-Please provide insights in the following JSON format:
+Generate manager insights in this exact JSON format (return ONLY valid JSON, no markdown, no extra text):
 {
-  "summary": "2-line team summary highlighting key trends",
-  "team_trends": "Brief analysis of overall team performance patterns",
+  "summary": "2 sentences max: the team's most important strength right now, and the single most urgent issue requiring manager attention",
+  "team_trends": "2-3 sentences: observable performance and availability patterns across the team, based on the data above",
   "insights": [
     {
-      "employeeId": "employee_uid",
-      "employeeName": "Employee Name",
+      "employeeId": "employee_uid_here",
+      "employeeName": "Full Name",
       "reason": "Performance Drop",
-      "detail": "Specific observation with data",
+      "detail": "1-2 sentences: specific observation about this employee, referencing their actual scores, trend, or feedback from the data above",
       "confidence": 78,
       "actions": [
         {
           "type": "meeting",
-          "label": "Schedule 1:1 check-in",
-          "meta": {
-            "suggested_length": "30m",
-            "priority": "high"
-          }
+          "label": "Specific action the manager should take — concrete and named (max 10 words)",
+          "meta": { "suggested_length": "30m", "priority": "high" }
         }
       ]
     }
@@ -324,21 +349,20 @@ Please provide insights in the following JSON format:
   "team_actions": [
     {
       "type": "training",
-      "detail": "Specific team-level recommendation",
-      "impact": "medium",
+      "detail": "Specific team-level action with clear rationale — what to do, who it affects, and why now",
+      "impact": "high",
       "confidence": 85
     }
   ]
 }
 
-Requirements:
-1. Identify up to 5 employees needing attention
-2. Use reason tags: "Attrition Risk", "Skill Gap", "Performance Drop", "High Performer", "Development Ready"
-3. Provide specific, actionable manager actions
-4. Include confidence scores (0-100)
-5. Be concise and decision-oriented
-6. Base insights on actual performance data
-`;
+Critical rules:
+1. Identify 3-5 employees who need the most manager attention (mix of concerns and high performers)
+2. Use ONLY these reason tags: "Attrition Risk", "Skill Gap", "Performance Drop", "High Performer", "Development Ready"
+3. Every "detail" must reference specific data from this employee's record — no generic statements
+4. Action labels must be specific enough to act on immediately — not just "have a conversation"
+5. Provide 2-3 team_actions covering different areas (training, hiring, recognition, process)
+6. Prioritize insights by urgency — most critical employees first`;
   }
 
   private parseEmployeeInsights(aiResponse: string, employee: Employee): EmployeeInsightsResponse {

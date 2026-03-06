@@ -27,7 +27,7 @@ class GeminiService {
       throw new Error('Gemini API key not found in environment variables');
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
   }
 
   async generateEmployeeRecommendations(
@@ -58,55 +58,61 @@ class GeminiService {
       skills: emp.skills.map(s => `${s.name} (${s.level})`),
       availability: emp.availability,
       department: emp.department || 'Not specified',
-      position: emp.position || 'Not specified'
+      position: emp.position || 'Not specified',
+      totalSkills: emp.skills.length,
+      expertSkills: emp.skills.filter(s => s.level === 'expert' || s.level === 'advanced').map(s => s.name)
     }));
 
-    return `
-You are an AI assistant helping a manager assign the best employees to a project. 
-Analyze the project requirements and employee data to provide recommendations.
+    const requiredSkillsList = projectRequirements.requiredSkills.length > 0
+      ? projectRequirements.requiredSkills.join(', ')
+      : 'General software development skills';
 
-PROJECT DETAILS:
+    return `You are a senior engineering manager and talent placement expert. Your job is to match the best employees to a project based on skills, availability, and fit.
+
+PROJECT REQUIREMENTS:
 - Title: ${projectRequirements.title}
 - Description: ${projectRequirements.description}
-- Required Skills: ${projectRequirements.requiredSkills.join(', ')}
-- Priority: ${projectRequirements.priority}
+- Required Skills: ${requiredSkillsList}
+- Priority: ${projectRequirements.priority.toUpperCase()}
 - Budget: ${projectRequirements.budget ? `₹${projectRequirements.budget.toLocaleString()}` : 'Not specified'}
 
-AVAILABLE EMPLOYEES:
+CANDIDATE POOL (${employees.length} employees):
 ${JSON.stringify(employeeData, null, 2)}
 
-Please analyze each employee and provide recommendations based on:
-1. Skill matching (exact matches and related skills)
-2. Availability status
-3. Experience level
-4. Department relevance
+SCORING CRITERIA (0-100):
+- Skill coverage: How many required skills does this person have? (40 points max)
+- Skill depth: Do they have expert/advanced level in key required skills? (25 points max)
+- Availability: available=25pts, limited=12pts, unavailable=0pts
+- Department and role relevance: (10 points max)
 
-Return your analysis in the following JSON format:
+REASONS GUIDELINES — for each recommended employee, write 3 specific, evidence-based reasons:
+- Reference actual skill names and their proficiency levels
+- Mention their availability status and what that means for the project
+- Note any expert/advanced skills that directly match the project
+- Mention department/role fit if relevant
+- Be concise but specific (e.g., "Expert-level React matches the frontend requirements" not just "Good skills")
+
+Return ONLY valid JSON in this exact format (no markdown, no extra text):
 {
   "recommendations": [
     {
       "employeeId": "employee_uid",
-      "score": 85,
-      "reasons": ["Strong React skills", "Available immediately", "Previous similar project experience"],
-      "skillMatches": ["React", "JavaScript"],
+      "score": 87,
+      "reasons": [
+        "Expert-level React and TypeScript directly cover the core frontend stack required",
+        "Currently available with no active blockers — can start immediately on ${projectRequirements.priority} priority work",
+        "Advanced JavaScript skills complement the team's technical needs for this project"
+      ],
+      "skillMatches": ["React", "TypeScript"],
       "availabilityStatus": "excellent"
     }
   ]
 }
 
-Score should be 0-100 where:
-- 90-100: Perfect match
-- 80-89: Excellent match
-- 70-79: Good match
-- 60-69: Fair match
-- Below 60: Poor match
+Score thresholds: 90-100 = Perfect fit | 80-89 = Excellent | 70-79 = Good | 60-69 = Acceptable | <60 = Poor fit
+availabilityStatus values: "excellent" (available), "good" (minor constraints), "limited" (limited), "unavailable" (not available)
 
-AvailabilityStatus should be:
-- "excellent": Available
-- "good": Available with minor constraints
-- "limited": Limited availability
-- "unavailable": Not available
-`;
+Include ALL employees in the response, sorted by score descending.`;
   }
 
   private parseRecommendations(
